@@ -7,11 +7,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return res.status(400).json({ error: 'OpenAI API Key가 없습니다.' });
 
-  const { name, zodiac, subjects } = req.body;
+  const { name, zodiac, subjects, saju } = req.body;
   if (!name || !zodiac) return res.status(400).json({ error: '입력값이 부족합니다.' });
 
   const client = new OpenAI({ apiKey });
   const subjectList = Array.isArray(subjects) ? subjects.join(', ') : (subjects ?? '없음');
+  const s = saju;
 
   try {
     const response = await client.chat.completions.create({
@@ -20,13 +21,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       messages: [
         {
           role: 'system',
-          content: '너는 병맛 사주 전문가 슝슝이야. 규칙: 욕설/인신공격 금지, 인터넷 밈·유행어 활용, 띠 동물 특성 비유 사용, 과목 언급, 반드시 한 문장 한국어로만 답해.',
+          content: `슝슝이: 욕X, 밈 사용(폼미쳤다, GOAT, ~각, 레전드 등)
+        오행(목화토금수)만 근거로 과목 추천 1문장
+        띠, 동물, 지지 절대 언급 금지`
         },
         {
           role: 'user',
-          content: `이름:${name} 띠:${zodiac} 과목:${subjectList}`,
-        },
-      ],
+          content: `이름:${name}
+        과목:${subjectList}
+        목${s.elements.wood} 화${s.elements.fire} 토${s.elements.earth} 금${s.elements.metal} 수${s.elements.water}`
+        }
+      ]
     });
 
     const fortune = response.choices[0]?.message?.content?.trim();

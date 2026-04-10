@@ -35,6 +35,7 @@ export const SharePage = ({ myData }: any) => {
             <li key={i}>{before} <span className="text-[#8B1A1A]">{highlight}</span>{after}</li>
           ))}
         </ul>
+        <p className="text-[9px] text-[#A09060] italic mt-2 text-right">* 이 가이드는 과학적 근거가 전혀 없습니다.</p>
       </div>
 
       <div className="bg-[#8B1A1A]/5 border-2 border-[#8B1A1A]/30 rounded-xl p-3.5 mb-3 shadow-sm">
@@ -54,7 +55,7 @@ export const SharePage = ({ myData }: any) => {
               <div key={label}>
                 <div className="text-[9px] text-[#8B6914] mb-1 font-bold">{label}</div>
                 <select value={val} onChange={e => set(parseInt(e.target.value))}
-                  className="w-full p-1 border-2 border-[#C8A860] rounded-lg bg-[#FFFBF0] text-[10px] text-[#3D1F0A] focus:outline-none focus:border-[#8B1A1A]">
+                  className="w-full p-1.5 border-2 border-[#C8A860] rounded-lg bg-[#FFFBF0] text-[13px] text-[#3D1F0A] focus:outline-none focus:border-[#8B1A1A]">
                   {items.map((t, i) => <option key={i} value={i}>{t}</option>)}
                 </select>
               </div>

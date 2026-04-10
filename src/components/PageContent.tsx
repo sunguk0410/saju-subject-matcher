@@ -1,5 +1,5 @@
 import { UserData } from '../types';
-import { handleSaveImage } from '../lib/utils';
+import { handleSaveImage, handleSaveSubjCompat } from '../lib/utils';
 import { MyForm } from './pages/FormPages';
 import { MyResult1, SubjCompatPage } from './pages/ResultPages';
 import { SharePage } from './pages/InteractivePages';
@@ -23,8 +23,8 @@ export default function PageContent({ type, myData, setMyData, draftMyData, setD
     switch (type) {
       case 'cover': return <CoverPage />;
       case 'myForm': return <MyForm draftMyData={draftMyData} setDraftMyData={setDraftMyData} setMyData={setMyData} setAiFortune={setAiFortune} onNext={onNext} />;
-      case 'myR1': return <MyResult1 myData={myData} aiFortune={aiFortune} loadingAi={loadingAi} onSave={() => handleSaveImage('my-result-1', '나의사주_결과')} />;
-      case 'subjCompat': return <SubjCompatPage myData={myData} onSave={() => handleSaveImage('subj-compat', '과목궁합_결과')} />;
+      case 'myR1': return <MyResult1 myData={myData} aiFortune={aiFortune} loadingAi={loadingAi} onSave={() => myData && handleSaveImage(myData, aiFortune, '나의사주_결과')} />;
+      case 'subjCompat': return <SubjCompatPage myData={myData} onSave={() => myData && handleSaveSubjCompat(myData, '과목궁합_결과')} />;
       case 'share': return <SharePage myData={myData} />;
       case 'fin': return <FinPage />;
       default: return null;

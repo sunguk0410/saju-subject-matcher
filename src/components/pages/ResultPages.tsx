@@ -58,7 +58,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
             <div className="flex items-center gap-2">
               <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                 className="inline-block text-base">🌀</motion.span>
-              <span className="text-[11px]">미래를 분석하는 중...</span>
+              <span className="text-[11px]">천기의 흐름을 읽는 중...</span>
             </div>
           ) : (
             <span>{aiFortune || '분석 결과가 없습니다.'}</span>
@@ -83,8 +83,8 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
 
       {/* 오행 분석 */}
       <div className="text-[10px] text-[#8B6914] font-bold mb-1 uppercase tracking-wider">오행 분석 (五行分析)</div>
-      <div className="flex flex-col items-center bg-white/50 rounded-2xl p-3 border border-[#C8A14B]/20 mb-3">
-        <div className="relative w-[200px] h-[210px]">
+      <div className="flex flex-col items-center bg-white/50 rounded-2xl p-2 border border-[#C8A14B]/20 mb-2">
+        <div className="relative w-[170px] h-[175px]">
           <svg viewBox="-15 -30 230 260" className="w-full h-full">
             <polygon points="100,20 180,80 150,170 50,170 20,80"
               fill="none" stroke="#C8A14B" strokeWidth="1" strokeDasharray="4,4" opacity="0.3" />
