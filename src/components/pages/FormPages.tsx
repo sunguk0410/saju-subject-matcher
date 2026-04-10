@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { UserData } from '../../types';
 import { calculateSaju } from '../../constants';
-import { fetchAiFortune } from '../../lib/utils';
 
 export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, onNext }: any) => {
   const { name, date, hour, subjects } = draftMyData;
@@ -24,7 +23,6 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
     };
     setMyData(userData);
     setAiFortune('');
-    fetchAiFortune(userData).then(setAiFortune);
     setIsSubmitting(false);
     onNext();
   };
