@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { UserData } from '../../types';
 import {
@@ -11,9 +11,11 @@ import { fetchAiFortune } from '../../lib/utils';
 
 export const MyResult1 = ({ myData, aiFortune, setAiFortune, onSave }: any) => {
   const [loadingAi, setLoadingAi] = useState(false);
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (!myData || aiFortune || loadingAi) return;
+    if (!myData || aiFortune || fetchedRef.current) return;
+    fetchedRef.current = true;
     setLoadingAi(true);
     fetchAiFortune(myData).then(fortune => {
       setAiFortune(fortune);

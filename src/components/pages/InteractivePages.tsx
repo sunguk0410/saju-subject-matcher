@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { CLICKBAIT_TITLES, DISTRACTION_CURSES } from '../../constants';
+import { CLICKBAIT_TITLES, DISTRACTION_CURSES, STUDY_TIPS, getSajuValue } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
 
 export const SharePage = ({ myData }: any) => {
   const [curseIdx, setCurseIdx] = useState(0);
   const [clickbaitIdx, setClickbaitIdx] = useState(0);
+
+  const tips = myData ? (() => {
+    const sv = getSajuValue(myData.saju);
+    return [0, 1, 2].map(i => STUDY_TIPS[(sv + i * 4) % STUDY_TIPS.length]);
+  })() : STUDY_TIPS.slice(0, 3);
 
   const handleCopy = (mode: 'normal' | 'curse') => {
     let text = "";
@@ -26,9 +31,9 @@ export const SharePage = ({ myData }: any) => {
       <div className="bg-[#C8A14B]/10 border-2 border-[#C8A14B]/30 rounded-xl p-3.5 mb-3 shadow-sm">
         <div className="text-[12px] text-[#8B6914] font-bold mb-2 flex items-center gap-2"><span>📚</span> 시험공부 팁 (Study Tips)</div>
         <ul className="text-[11px] text-[#3D1F0A] space-y-1.5 list-disc pl-4 font-medium">
-          <li>오행의 기운이 부족할 땐 <span className="text-[#8B1A1A]">초콜릿</span>을 섭취하시오.</li>
-          <li>집중력이 떨어지면 <span className="text-[#8B1A1A]">슝슝이</span> 사진을 보며 반성하시오.</li>
-          <li>가장 확실한 운빨 전략은 <span className="text-[#8B1A1A]">지금 당장 책을 펴는 것</span>이오.</li>
+          {tips.map(([before, highlight, after], i) => (
+            <li key={i}>{before} <span className="text-[#8B1A1A]">{highlight}</span>{after}</li>
+          ))}
         </ul>
       </div>
       <div className="bg-[#8B1A1A]/5 border-2 border-[#8B1A1A]/30 rounded-xl p-3.5 mb-3 shadow-sm">

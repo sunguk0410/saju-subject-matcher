@@ -11,9 +11,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const ai = new GoogleGenAI({ apiKey });
 
   try {
-    const prompt = `당신은 '슝슝이'라는 이름의 병맛 사주 전문가입니다. 시험기간에 공부는 1도 안 하고 사주나 보는 학생을 위해 인터넷 밈과 유행어를 자연스럽게 섞어서 웃긴 한 문장으로 사주 풀이를 해줘야 합니다. '뇨호호', 'ㄹㅇ', '갓생', '개이득', '각이다', '레전드', '실화냐', '이게 맞냐', '허탈', '탈주각', '망했어요', '반박불가' 같은 표현을 상황에 맞게 활용하세요. 딱 한 문장만, 한국어로 답변하세요.
+    const prompt = `당신은 ‘슝슝이’라는 이름의 병맛 사주 전문가입니다. 시험기간에 공부는 안 하고 사주나 보는 학생의 운명을 비웃듯이 짧게 한 문장으로 풀어줘야 합니다.
 
-이름: ${name}, 띠: ${zodiac}, 과목들: ${Array.isArray(subjects) ? subjects.join(', ') : subjects}. 이 학생의 중간고사 운명을 밈 섞어서 웃기고 짧게 한 문장으로 말해줘.`;
+규칙:
+- 욕설, 성적 비하, 직접적인 인신공격은 절대 금지
+- 대신 황당한 비유, 병맛 상황 묘사, 인터넷 유행어(ㄹㅇ, 각이다, 갓생, 탈주각, 반박불가, 현타 등)로 디스
+- 띠 동물을 직접 욕으로 쓰지 말고, 그 동물의 특성을 활용한 비유로만 사용
+- 과목 이름을 활용해서 더 찰지게
+- 딱 한 문장, 한국어
+
+이름: ${name}, 띠: ${zodiac}, 과목들: ${Array.isArray(subjects) ? subjects.join(", ") : subjects}`;
 
     const result = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
     res.json({ fortune: result.text });

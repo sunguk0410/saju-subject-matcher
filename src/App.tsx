@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserData } from './types';
 import Book from './components/Book';
 import Landing from './components/Landing';
+import { fetchAiFortune } from './lib/utils';
 
 export default function App() {
   const [myData, setMyData] = useState<UserData | null>(() => {
