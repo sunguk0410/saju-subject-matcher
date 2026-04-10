@@ -124,9 +124,9 @@ const SajuWheel = () => (
 
 export const CoverPage = () => (
   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-4 w-full">
-    <div className="text-[11px] text-[#8B6914] tracking-[5px] font-serif mb-2">✦ 운빨 분석 시스템 ✦</div>
+    <div className="text-[11px] text-[#8B6914] tracking-[5px] font-serif mb-2">✦ 궁합 매칭 시스템 ✦</div>
     <div className="font-serif text-[40px] text-[#3D1F0A] tracking-[7px] mb-1">八字大學</div>
-    <div className="font-serif text-[16px] text-[#5C3010] tracking-[3px] mb-3">기말고사 운빨 전략</div>
+    <div className="font-serif text-[16px] text-[#5C3010] tracking-[3px] mb-3">중간고사 사주 궁합</div>
     <div className="w-full h-px bg-[#C8A14B] opacity-60 mb-3" />
 
     <div className="flex justify-center my-2 w-full">
@@ -137,7 +137,7 @@ export const CoverPage = () => (
     <div className="bg-[#8B1A1A]/5 border border-dashed border-[#8B1A1A]/40 rounded-md p-4 text-[12px] text-[#5C1608] italic leading-relaxed w-full shadow-inner">
       태어난 기운과 과목의 오행을 분석하여<br />최적의 시험 전략을 제안하는 시스템입니다.
     </div>
-    <div className="text-[11px] text-[#8B6914] mt-4 tracking-widest font-bold">기말고사 운빨 전략 특별판</div>
+    <div className="text-[11px] text-[#8B6914] mt-4 tracking-widest font-bold">중간고사 운빨 전략 특별판</div>
   </div>
 );
 

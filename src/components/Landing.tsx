@@ -13,8 +13,8 @@ export default function Landing({ onOpen }: LandingProps) {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="flex flex-col items-center justify-center p-8 z-10 w-full"
     >
-      <div className="text-[#C8A14B] font-serif text-base tracking-[5px] mb-1">✦ 운빨 분석 시스템 ✦</div>
-      <div className="text-[#5C4020] text-[12px] tracking-[2px] mb-12 uppercase">중간고사 운빨 전략 특별판 · 八字大學</div>
+      <div className="text-[#C8A14B] font-serif text-base tracking-[5px] mb-1">✦ 궁합 매칭 시스템 ✦</div>
+      <div className="text-[#5C4020] text-[12px] tracking-[2px] mb-12 uppercase">중간고사 사주 궁합 특별판 · 八字大學</div>
 
       <button
         onClick={onOpen}
@@ -39,9 +39,9 @@ export default function Landing({ onOpen }: LandingProps) {
 
                 <div className="text-[13px] text-[#C8A14B] tracking-[5px] font-serif mb-4 uppercase font-bold">✦ 秘傳 ✦</div>
                 <div className="font-serif text-[42px] text-[#FFD888] tracking-[8px] mb-2 drop-shadow-lg">八字大學</div>
-                <div className="font-serif text-[22px] text-[#E8B84B] leading-tight mb-4 italic">기말고사<br/>운빨 전략</div>
+                <div className="font-serif text-[22px] text-[#E8B84B] leading-tight mb-4 italic">중간고사<br/>운빨 전략</div>
                 <div className="w-[80%] h-0.5 bg-gradient-to-r from-transparent via-[#C8A14B] to-transparent my-4 mx-auto" />
-                <div className="text-[12px] text-[#C8A14B] tracking-[3px] font-medium">운빨 분석 시스템</div>
+                <div className="text-[12px] text-[#C8A14B] tracking-[3px] font-medium">사주 매칭 시스템</div>
 
                 {/* Seal */}
                 <div className="mt-6 w-14 h-14 border-2 border-[#8B1A1A] rounded-sm flex items-center justify-center rotate-12 bg-[#8B1A1A]/10">
@@ -70,7 +70,7 @@ export default function Landing({ onOpen }: LandingProps) {
         transition={{ duration: 2, repeat: Infinity }}
         className="text-[#C8A14B] text-[13px] mt-12 tracking-[1px]"
       >
-        📖 슝슝이 책을 클릭하면 운명이 펼쳐집니다
+        📖 클릭하는 순간 당신의 운명이 펼쳐집니다.
       </motion.div>
     </motion.div>
   );
