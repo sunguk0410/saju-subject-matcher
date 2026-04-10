@@ -159,7 +159,7 @@ export const FinPage = () => (
         이제 사주도 봤으니<br />공부를 해야 하지 않겠느냐.<br /><br />하지만 운명이란 것은...<br />어차피 정해져 있다고 하니<br />마지막까지 최선을 다해보시오.
       </div>
       <div className="bg-[#8B1A1A]/10 border-2 border-dashed border-[#8B1A1A]/40 rounded-xl px-6 py-3 text-[14px] text-[#5C1608] italic font-serif font-bold shadow-lg backdrop-blur-sm">
-        — 슝슝이 —
+        — 멋사도사 —
       </div>
     </div>
   </div>

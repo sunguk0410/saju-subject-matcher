@@ -20,15 +20,20 @@ export default function App() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [isBookOpen, setIsBookOpen] = useState(false);
   const [isCursed, setIsCursed] = useState(() => window.location.search.includes('curse=true'));
-  const fetchingRef = useRef(false);
+  const fetchGenRef = useRef(0);
+  const isInitialRender = useRef(true);
 
-  // fetch는 여기서만 1회 실행 — 컴포넌트 렌더링 횟수와 무관
+  // 폼 제출로 myData가 새로 바뀔 때만 fetch (마운트 시 localStorage 복원은 제외)
   useEffect(() => {
-    fetchingRef.current = false;
-    if (!myData || aiFortune) return;
-    fetchingRef.current = true;
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+    if (!myData) return;
+    const gen = ++fetchGenRef.current;
     setLoadingAi(true);
     fetchAiFortune(myData).then(fortune => {
+      if (gen !== fetchGenRef.current) return;
       setAiFortune(fortune);
       setLoadingAi(false);
     });
@@ -37,18 +42,12 @@ export default function App() {
   useEffect(() => {
     if (myData) localStorage.setItem('myData', JSON.stringify(myData));
     else localStorage.removeItem('myData');
-  }, [myData]);
-
-  useEffect(() => {
     localStorage.setItem('draftMyData', JSON.stringify(draftMyData));
-  }, [draftMyData]);
+  }, [myData, draftMyData]);
 
   useEffect(() => {
-    if (aiFortune && !aiFortune.includes('잠들었습니다')) {
-      localStorage.setItem('aiFortune', aiFortune);
-    } else if (!aiFortune) {
-      localStorage.removeItem('aiFortune');
-    }
+    if (aiFortune && !aiFortune.includes('잠들었습니다')) localStorage.setItem('aiFortune', aiFortune);
+    else if (!aiFortune) localStorage.removeItem('aiFortune');
   }, [aiFortune]);
 
   return (

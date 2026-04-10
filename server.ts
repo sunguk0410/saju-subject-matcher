@@ -14,7 +14,7 @@ async function startServer() {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (apiKey) {
-    console.log("✅ Gemini API Key 확인됨. 모델: gemini-2.5-flash");
+    console.log("✅ Gemini API Key 확인됨.");
   } else {
     console.warn("⚠️ Gemini API Key 없음. AI 운세 기능이 비활성화됩니다.");
   }
