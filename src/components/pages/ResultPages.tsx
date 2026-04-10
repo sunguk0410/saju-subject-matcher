@@ -96,15 +96,22 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
             <polygon points={polygonPath} fill="rgba(200,161,75,0.4)" stroke="#8B6914" strokeWidth="2" />
             {labelPos.map(({ key, lx, ly, anchor }) => (
               <g key={key}>
-                <text x={lx} y={ly} textAnchor={anchor} fontSize="11" fontWeight="bold"
+                <text x={lx} y={ly} textAnchor={anchor} fontSize="14" fontWeight="bold"
                   fill={OHF[key]} fontFamily="serif">{OHK[key]}</text>
-                <text x={lx} y={ly + 13} textAnchor={anchor} fontSize="10"
+                <text x={lx} y={ly + 16} textAnchor={anchor} fontSize="13"
                   fill={OHF[key]} fontFamily="sans-serif">
                   {Math.round((elements[key] / total) * 100)}%
                 </text>
               </g>
             ))}
           </svg>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2 mt-1">
+          {(['목', '화', '토', '금', '수'] as const).filter(k => elements[k] > 0).map(k => (
+            <span key={k} className={`px-3 py-1 rounded-full text-[13px] font-bold ${OHC[k]}`}>
+              {OHK[k]} {elements[k]}
+            </span>
+          ))}
         </div>
       </div>
 

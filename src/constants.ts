@@ -14,6 +14,13 @@ export const OHK: Record<string, string> = { '목': '木', '화': '火', '토': 
 export const OHF: Record<string, string> = {
   '목': '#2E7D32', '화': '#C62828', '토': '#E65100', '금': '#37474F', '수': '#1565C0',
 };
+export const HOUR_SKY_START: Record<string, number> = {
+  '甲': 0, '己': 0,
+  '乙': 2, '庚': 2,
+  '丙': 4, '辛': 4,
+  '丁': 6, '壬': 6,
+  '戊': 8, '癸': 8,
+};
 
 export interface SajuPillar { sky: string; earth: string; }
 export interface Saju {
@@ -21,37 +28,90 @@ export interface Saju {
   zodiac: string;
 }
 
-function gY(y: number): SajuPillar {
-  return { sky: SKY[((y - 1864) % 10 + 10) % 10], earth: EARTH[((y - 1864) % 12 + 12) % 12] };
+// 12 주요 절기 [월, 일] - 각 월주(月柱)가 시작되는 절기 근사치
+// 소한→丑, 입춘→寅(년주 변경), 경칩→卯, 청명→辰, 입하→巳,
+// 망종→午, 소서→未, 입추→申, 백로→酉, 한로→戌, 입동→亥, 대설→子
+const JEOLGI: [number, number][] = [
+  [1, 6], [2, 4], [3, 6], [4, 5], [5, 6], [6, 6],
+  [7, 7], [8, 7], [9, 8], [10, 8], [11, 7], [12, 7],
+];
+
+// 날짜로 현재 절기 인덱스 구하기 (-1: 소한 이전 = 전년도 子월)
+function jeolgiIdx(month: number, day: number): number {
+  for (let i = JEOLGI.length - 1; i >= 0; i--) {
+    const [jm, jd] = JEOLGI[i];
+    if (month > jm || (month === jm && day >= jd)) return i;
+  }
+  return -1;
 }
 
-function gM(y: number, m: number): SajuPillar {
-  const base = (((y - 1864) % 10 + 10) % 10 % 5) * 2 + 2;
-  return { sky: SKY[(base + m - 1) % 10], earth: EARTH[(m + 1) % 12] };
+// 입춘 기준 사주 연도
+function sajuYear(y: number, month: number, day: number): number {
+  const [im, id] = JEOLGI[1]; // 입춘
+  return (month < im || (month === im && day < id)) ? y - 1 : y;
+}
+
+function gY(y: number, month: number, day: number): SajuPillar {
+  const sy = sajuYear(y, month, day);
+  return {
+    sky: SKY[((sy - 1864) % 10 + 10) % 10],
+    earth: EARTH[((sy - 1864) % 12 + 12) % 12],
+  };
+}
+
+function gM(y: number, month: number, day: number): SajuPillar {
+  const ji = jeolgiIdx(month, day);
+  // 지지: 소한(0)→丑(1), 입춘(1)→寅(2), ..., 대설(11)→子(0), 소한이전(-1)→子(0)
+  const earthIdx = ji === -1 ? 0 : (ji + 1) % 12;
+
+  // 월간: 사주 연도 년간 기준으로 결정
+  const sy = sajuYear(y, month, day);
+  const yearSkyIdx = ((sy - 1864) % 10 + 10) % 10;
+  // 인월(寅月) 천간 시작: 甲/己년→丙, 乙/庚년→戊, 丙/辛년→庚, 丁/壬년→壬, 戊/癸년→甲
+  const 인월SkyIdx = (yearSkyIdx % 5) * 2 + 2;
+  // 인월(earthIdx=2)부터 몇 번째 월인지
+  const skyIdx = (인월SkyIdx + (earthIdx - 2 + 12) % 12) % 10;
+
+  return { sky: SKY[skyIdx], earth: EARTH[earthIdx] };
 }
 
 function gD(d: Date): SajuPillar {
+  // 1900-01-01 = 甲戌일 기준: Unix epoch(1970-01-01)은 25567일 후
+  // offset sky: 25567 % 10 = 7, offset earth: (25567 + 10) % 12 = 5
   const n = Math.floor(d.getTime() / 86400000);
-  return { sky: SKY[((n + 7) % 10 + 10) % 10], earth: EARTH[((n + 5) % 12 + 12) % 12] };
+  return {
+    sky: SKY[((n + 7) % 10 + 10) % 10],
+    earth: EARTH[((n + 5) % 12 + 12) % 12],
+  };
 }
 
 function gH(daySky: string, h: string): SajuPillar {
   if (!h) return { sky: SKY[0], earth: EARTH[0] };
-  const ei = Math.floor(((parseInt(h) + 1) % 24) / 2);
-  const base = (SKY.indexOf(daySky) % 5) * 2;
-  return { sky: SKY[(base + ei * 2) % 10], earth: EARTH[ei] };
+
+  const hour = parseInt(h);
+  const ei = Math.floor(((hour + 1) % 24) / 2);
+  const startSkyIdx = HOUR_SKY_START[daySky];
+  const skyIdx = (startSkyIdx + ei) % 10;
+
+  return {
+    sky: SKY[skyIdx],
+    earth: EARTH[ei],
+  };
 }
 
 export function calculateSaju(dateStr: string, hourVal: string): Saju {
   const d = new Date(dateStr);
-  const y = d.getFullYear();
-  const day = gD(d);
+  // UTC 기준으로 연/월/일 추출 (dateStr은 "YYYY-MM-DD" 형식으로 UTC midnight 파싱)
+  const y = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  const dayPillar = gD(d);
   return {
-    year: gY(y),
-    month: gM(y, d.getMonth() + 1),
-    day,
-    hour: gH(day.sky, hourVal),
-    zodiac: EANI[((y - 2020) % 12 + 12) % 12],
+    year: gY(y, month, day),
+    month: gM(y, month, day),
+    day: dayPillar,
+    hour: gH(dayPillar.sky, hourVal),
+    zodiac: EANI[((sajuYear(y, month, day) - 2020) % 12 + 12) % 12],
   };
 }
 
