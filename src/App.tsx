@@ -17,8 +17,22 @@ export default function App() {
   const [aiFortune, setAiFortune] = useState<string>(() => {
     return localStorage.getItem('aiFortune') || '';
   });
+  const [loadingAi, setLoadingAi] = useState(false);
   const [isBookOpen, setIsBookOpen] = useState(false);
   const [isCursed, setIsCursed] = useState(() => window.location.search.includes('curse=true'));
+  const fetchingRef = useRef(false);
+
+  // fetch는 여기서만 1회 실행 — 컴포넌트 렌더링 횟수와 무관
+  useEffect(() => {
+    fetchingRef.current = false;
+    if (!myData || aiFortune) return;
+    fetchingRef.current = true;
+    setLoadingAi(true);
+    fetchAiFortune(myData).then(fortune => {
+      setAiFortune(fortune);
+      setLoadingAi(false);
+    });
+  }, [myData]);
 
   useEffect(() => {
     if (myData) localStorage.setItem('myData', JSON.stringify(myData));
@@ -87,6 +101,7 @@ export default function App() {
               setDraftMyData={setDraftMyData}
               aiFortune={aiFortune}
               setAiFortune={setAiFortune}
+              loadingAi={loadingAi}
               onClose={() => setIsBookOpen(false)}
             />
           </motion.div>

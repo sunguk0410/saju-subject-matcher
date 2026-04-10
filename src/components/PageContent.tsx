@@ -13,16 +13,17 @@ interface PageContentProps {
   setDraftMyData: (data: any) => void;
   aiFortune: string;
   setAiFortune: (fortune: string) => void;
+  loadingAi: boolean;
   pageNumber: number;
   onNext: () => void;
 }
 
-export default function PageContent({ type, myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune, pageNumber, onNext }: PageContentProps) {
+export default function PageContent({ type, myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune, loadingAi, pageNumber, onNext }: PageContentProps) {
   const renderContent = () => {
     switch (type) {
       case 'cover': return <CoverPage />;
       case 'myForm': return <MyForm draftMyData={draftMyData} setDraftMyData={setDraftMyData} setMyData={setMyData} setAiFortune={setAiFortune} onNext={onNext} />;
-      case 'myR1': return <MyResult1 myData={myData} aiFortune={aiFortune} setAiFortune={setAiFortune} onSave={() => handleSaveImage('my-result-1', '나의사주_결과')} />;
+      case 'myR1': return <MyResult1 myData={myData} aiFortune={aiFortune} loadingAi={loadingAi} onSave={() => handleSaveImage('my-result-1', '나의사주_결과')} />;
       case 'subjCompat': return <SubjCompatPage myData={myData} onSave={() => handleSaveImage('subj-compat', '과목궁합_결과')} />;
       case 'share': return <SharePage myData={myData} />;
       case 'fin': return <FinPage />;

@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { UserData } from '../../types';
 import {
@@ -7,21 +6,8 @@ import {
   BYEONGMAT_COMMENTS
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
-import { fetchAiFortune } from '../../lib/utils';
 
-export const MyResult1 = ({ myData, aiFortune, setAiFortune, onSave }: any) => {
-  const [loadingAi, setLoadingAi] = useState(false);
-  const fetchedRef = useRef(false);
-
-  useEffect(() => {
-    if (!myData || aiFortune || fetchedRef.current) return;
-    fetchedRef.current = true;
-    setLoadingAi(true);
-    fetchAiFortune(myData).then(fortune => {
-      setAiFortune(fortune);
-      setLoadingAi(false);
-    });
-  }, [myData, aiFortune]);
+export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
 
   if (!myData) return <LoadingPlaceholder text="사주 입력 후 공개됩니다" />;
   const s = myData.saju;
@@ -94,23 +80,37 @@ export const MyResult1 = ({ myData, aiFortune, setAiFortune, onSave }: any) => {
 
       <div className="text-[10px] text-[#8B6914] font-bold mb-1 uppercase tracking-wider">오행 분석 (五行分析)</div>
       <div className="flex flex-col items-center bg-white/50 rounded-2xl p-3 border border-[#C8A14B]/20 mb-3">
-        <div className="relative w-[150px] h-[150px]">
-          <svg viewBox="0 0 200 200" className="w-full h-full">
-            <polygon points="100,20 180,80 150,170 50,170 20,80" fill="none" stroke="#C8A14B" strokeWidth="1" strokeDasharray="4,4" className="opacity-30" />
-            {[0.25, 0.5, 0.75].map(r => (
-              <polygon key={r} points={pentagonPoints.map(p => `${100 + (p.x-100)*r},${100 + (p.y-100)*r}`).join(' ')} fill="none" stroke="#C8A14B" strokeWidth="0.5" className="opacity-20" />
-            ))}
-            <polygon points={polygonPath} fill="rgba(200, 161, 75, 0.4)" stroke="#8B6914" strokeWidth="2" />
-            {pentagonPoints.map(p => (
-              <text key={p.label} x={p.x + (p.x > 100 ? 5 : p.x < 100 ? -15 : -5)} y={p.y + (p.y > 100 ? 15 : p.y < 100 ? -5 : -5)} className="text-[14px] font-bold fill-[#3D1F0A]">{p.label}</text>
-            ))}
-          </svg>
-        </div>
-        <div className="flex gap-1.5 flex-wrap justify-center mt-2">
-          {Object.entries(elements).filter(([, v]) => v > 0).map(([k, v]) => (
-            <span key={k} className={`px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm ${OHC[k]}`}>{OHK[k]} {v}</span>
-          ))}
-        </div>
+        {(() => {
+          const total = Object.values(elements).reduce((a, b) => a + b, 0) || 1;
+          const ohFill: Record<string, string> = { '목': '#2E7D32', '화': '#C62828', '토': '#E65100', '금': '#37474F', '수': '#1565C0' };
+          const labelPos = pentagonPoints.map(p => {
+            const anchor = p.x > 120 ? 'start' : p.x < 80 ? 'end' : 'middle';
+            const ox = p.x > 120 ? 14 : p.x < 80 ? -14 : 0;
+            const oy = p.y < 50 ? -14 : p.y > 140 ? 20 : 0;
+            return { ...p, anchor, lx: p.x + ox, ly: p.y + oy };
+          });
+          return (
+            <div className="relative w-[200px] h-[210px]">
+              <svg viewBox="-15 -30 230 260" className="w-full h-full">
+                <polygon points="100,20 180,80 150,170 50,170 20,80" fill="none" stroke="#C8A14B" strokeWidth="1" strokeDasharray="4,4" opacity="0.3" />
+                {[0.25, 0.5, 0.75].map(r => (
+                  <polygon key={r} points={pentagonPoints.map(p => `${100 + (p.x-100)*r},${100 + (p.y-100)*r}`).join(' ')} fill="none" stroke="#C8A14B" strokeWidth="0.5" opacity="0.2" />
+                ))}
+                <polygon points={polygonPath} fill="rgba(200,161,75,0.4)" stroke="#8B6914" strokeWidth="2" />
+                {labelPos.map(p => {
+                  const pct = Math.round((elements[p.key] / total) * 100);
+                  const color = ohFill[p.key] || '#3D1F0A';
+                  return (
+                    <g key={p.key}>
+                      <text x={p.lx} y={p.ly} textAnchor={p.anchor} fontSize="11" fontWeight="bold" fill={color} fontFamily="serif">{OHK[p.key]}</text>
+                      <text x={p.lx} y={p.ly + 13} textAnchor={p.anchor} fontSize="10" fill={color} fontFamily="sans-serif">{pct}%</text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          );
+        })()}
       </div>
 
       <div className="bg-[#8B1A1A]/5 border-l-4 border-[#8B1A1A] p-2.5 rounded-r-lg text-[11px] text-[#5C1608] italic leading-relaxed shadow-sm">

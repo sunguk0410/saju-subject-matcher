@@ -10,6 +10,7 @@ interface BookProps {
   setDraftMyData: (data: any) => void;
   aiFortune: string;
   setAiFortune: (fortune: string) => void;
+  loadingAi: boolean;
   onClose: () => void;
 }
 
@@ -19,7 +20,7 @@ const SPREADS = [
   { l: 'share', r: 'fin', lbl: '공유 · 끝' },
 ];
 
-export default function Book({ myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune, onClose }: BookProps) {
+export default function Book({ myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune, loadingAi, onClose }: BookProps) {
   const [cur, setCur] = useState(0);
   const [isFlipping, setIsFlipping] = useState(false);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
@@ -40,7 +41,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
     }
   };
 
-  const pageProps = { myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune };
+  const pageProps = { myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune, loadingAi };
 
   return (
     <motion.div
@@ -135,7 +136,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
 
             <button
               onClick={handleNext}
-              disabled={cur === SPREADS.length - 1 || isFlipping}
+              disabled={cur === SPREADS.length - 1 || isFlipping || (cur === 0 && !myData)}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8A14B] text-[#3D1F0A] font-bold disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#E8C060] transition-all shadow-md active:scale-95"
             >
               <span className="text-[11px] uppercase tracking-tighter">다음</span>
