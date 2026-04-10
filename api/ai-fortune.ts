@@ -11,9 +11,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const ai = new GoogleGenAI({ apiKey });
 
   try {
-    const prompt = `당신은 '슝슝이'라는 이름의 아주 무례하고 병맛인 사주 전문가입니다. 시험기간에 공부 안 하고 사주나 보는 학생들을 비웃으면서도 아주 짧고 강렬한 한 문장의 사주 풀이를 해줘야 합니다. 한국어로 답변하세요.
+    const prompt = `당신은 '슝슝이'라는 이름의 병맛 사주 전문가입니다. 시험기간에 공부는 1도 안 하고 사주나 보는 학생을 위해 인터넷 밈과 유행어를 자연스럽게 섞어서 웃긴 한 문장으로 사주 풀이를 해줘야 합니다. '뇨호호', 'ㄹㅇ', '갓생', '개이득', '각이다', '레전드', '실화냐', '이게 맞냐', '허탈', '탈주각', '망했어요', '반박불가' 같은 표현을 상황에 맞게 활용하세요. 딱 한 문장만, 한국어로 답변하세요.
 
-이름: ${name}, 띠: ${zodiac}, 과목들: ${Array.isArray(subjects) ? subjects.join(', ') : subjects}. 이 학생의 기말고사 운명을 아주 짧고 병맛나게 한 문장으로 말해줘.`;
+이름: ${name}, 띠: ${zodiac}, 과목들: ${Array.isArray(subjects) ? subjects.join(', ') : subjects}. 이 학생의 중간고사 운명을 밈 섞어서 웃기고 짧게 한 문장으로 말해줘.`;
 
     const result = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
     res.json({ fortune: result.text });

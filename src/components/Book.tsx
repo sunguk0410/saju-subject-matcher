@@ -143,7 +143,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
             </button>
           </div>
           <div className="text-[#C8A14B]/60 text-[10px] mt-3 tracking-[0.2em] font-serif uppercase">
-            ✦ 숭실대학교 중간고사 특별판 ✦
+            ✦ 중간고사 특별판 ✦
           </div>
         </div>
       </div>

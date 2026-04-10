@@ -125,7 +125,7 @@ const SajuWheel = () => (
 export const CoverPage = () => (
   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-4 w-full">
     <div className="text-[11px] text-[#8B6914] tracking-[5px] font-serif mb-2">✦ 운빨 분석 시스템 ✦</div>
-    <div className="font-serif text-[40px] text-[#3D1F0A] tracking-[7px] mb-1">八字대로</div>
+    <div className="font-serif text-[40px] text-[#3D1F0A] tracking-[7px] mb-1">八字大學</div>
     <div className="font-serif text-[16px] text-[#5C3010] tracking-[3px] mb-3">기말고사 운빨 전략</div>
     <div className="w-full h-px bg-[#C8A14B] opacity-60 mb-3" />
 

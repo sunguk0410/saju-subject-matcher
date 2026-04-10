@@ -14,7 +14,7 @@ export default function Landing({ onOpen }: LandingProps) {
       className="flex flex-col items-center justify-center p-8 z-10 w-full"
     >
       <div className="text-[#C8A14B] font-serif text-base tracking-[5px] mb-1">✦ 운빨 분석 시스템 ✦</div>
-      <div className="text-[#5C4020] text-[12px] tracking-[2px] mb-12 uppercase">중간고사 운빨 전략 특별판 · 八字대로</div>
+      <div className="text-[#5C4020] text-[12px] tracking-[2px] mb-12 uppercase">중간고사 운빨 전략 특별판 · 八字大學</div>
 
       <button
         onClick={onOpen}
@@ -38,7 +38,7 @@ export default function Landing({ onOpen }: LandingProps) {
                 <div className="absolute bottom-2 right-2 w-7 h-7 border-b-2 border-r-2 border-[#C8A14B]" />
 
                 <div className="text-[13px] text-[#C8A14B] tracking-[5px] font-serif mb-4 uppercase font-bold">✦ 秘傳 ✦</div>
-                <div className="font-serif text-[42px] text-[#FFD888] tracking-[8px] mb-2 drop-shadow-lg">八字대로</div>
+                <div className="font-serif text-[42px] text-[#FFD888] tracking-[8px] mb-2 drop-shadow-lg">八字大學</div>
                 <div className="font-serif text-[22px] text-[#E8B84B] leading-tight mb-4 italic">기말고사<br/>운빨 전략</div>
                 <div className="w-[80%] h-0.5 bg-gradient-to-r from-transparent via-[#C8A14B] to-transparent my-4 mx-auto" />
                 <div className="text-[12px] text-[#C8A14B] tracking-[3px] font-medium">운빨 분석 시스템</div>

@@ -52,7 +52,20 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
         <select value={hour} onChange={e => updateDraft('hour', e.target.value)}
           className="w-full p-2 border-2 border-[#C8A14B]/40 rounded-lg bg-white/60 text-[13px] focus:outline-none focus:border-[#8B1A1A] transition-colors">
           <option value="">모름</option>
-          {Array.from({ length: 24 }, (_, i) => <option key={i} value={String(i)}>{i}시</option>)}
+          {[
+            { label: '자시 (子時) 23:30~1:30', value: '23' },
+            { label: '축시 (丑時) 1:30~3:30', value: '1' },
+            { label: '인시 (寅時) 3:30~5:30', value: '3' },
+            { label: '묘시 (卯時) 5:30~7:30', value: '5' },
+            { label: '진시 (辰時) 7:30~9:30', value: '7' },
+            { label: '사시 (巳時) 9:30~11:30', value: '9' },
+            { label: '오시 (午時) 11:30~13:30', value: '11' },
+            { label: '미시 (未時) 13:30~15:30', value: '13' },
+            { label: '신시 (申時) 15:30~17:30', value: '15' },
+            { label: '유시 (酉時) 17:30~19:30', value: '17' },
+            { label: '술시 (戌時) 19:30~21:30', value: '19' },
+            { label: '해시 (亥時) 21:30~23:30', value: '21' },
+          ].map(({ label, value }) => <option key={value} value={value}>{label}</option>)}
         </select>
       </div>
 
