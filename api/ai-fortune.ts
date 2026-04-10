@@ -2,38 +2,16 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import OpenAI from 'openai';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // body 안전 파싱 (Vercel 대응)
-  const body = typeof req.body === 'string'
-    ? JSON.parse(req.body)
-    : req.body || {};
-
-  const { name, subjects, saju } = body;
-
-  // 입력값 검증
-  if (!name) {
-    return res.status(400).json({ error: '이름이 없습니다.' });
-  }
-
-  if (!saju?.elements) {
-    return res.status(400).json({ error: 'saju 데이터 구조가 잘못되었습니다.' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return res.status(400).json({ error: 'OpenAI API Key가 없습니다.' });
-  }
+  if (!apiKey) return res.status(400).json({ error: 'OpenAI API Key가 없습니다.' });
+
+  const { name, zodiac, subjects } = req.body;
+  if (!name || !zodiac) return res.status(400).json({ error: '입력값이 부족합니다.' });
 
   const client = new OpenAI({ apiKey });
-
-  const subjectList = Array.isArray(subjects)
-    ? subjects.join(', ')
-    : (subjects ?? '없음');
-
-  const s = saju.elements;
+  const subjectList = Array.isArray(subjects) ? subjects.join(', ') : (subjects ?? '없음');
 
   try {
     const response = await client.chat.completions.create({
@@ -42,32 +20,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       messages: [
         {
           role: 'system',
-          content: `슝슝이: 욕X, 밈 사용(폼미쳤다, GOAT, ~각, 레전드 등)
-오행(목화토금수)만 근거로 과목 추천 1문장
-띠, 동물, 지지 절대 언급 금지`
+          content: '너는 병맛 사주 전문가 슝슝이야. 규칙: 욕설/인신공격 금지, 인터넷 밈·유행어 활용, 과목 언급, 반드시 한 문장 한국어로만 답해.',
         },
         {
           role: 'user',
-          content: `이름:${name}
-과목:${subjectList}
-목${s.wood} 화${s.fire} 토${s.earth} 금${s.metal} 수${s.water}`
-        }
-      ]
+          content: `이름:${name} 띠:${zodiac} 과목:${subjectList}`,
+        },
+      ],
     });
 
     const fortune = response.choices[0]?.message?.content?.trim();
+    if (!fortune) return res.status(500).json({ error: '응답이 비어있습니다.' });
 
-    if (!fortune) {
-      return res.status(500).json({ error: '응답이 비어있습니다.' });
-    }
-
-    return res.status(200).json({ fortune });
-
+    res.json({ fortune });
   } catch (error: any) {
-    console.error("OpenAI ERROR:", error);
-
-    return res.status(500).json({
-      error: error.message || '서버 에러 발생'
-    });
+    res.status(500).json({ error: error.message });
   }
 }
