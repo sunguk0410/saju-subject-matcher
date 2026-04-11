@@ -3,19 +3,34 @@ import { getFiveElements, getSajuValue, pick, OHF, OHK, BYEONGMAT_COMMENTS } fro
 
 export const fetchAiFortune = async (userData: UserData): Promise<string> => {
   try {
+    console.log('보내는 데이터:', {
+      name: userData.name,
+      subjects: userData.subjects,
+      saju: userData.saju,
+    });
+
     const response = await fetch('/api/ai-fortune', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: userData.name,
-        zodiac: userData.saju.zodiac,
         subjects: userData.subjects,
         saju: userData.saju,
       })
     });
+
+    // 👇 추가: 실제 에러 메시지 확인
     const data = await response.json();
+    console.log('서버 응답:', response.status, data);
+
     if (response.ok && data.fortune) return data.fortune;
-  } catch {}
+    
+    // 👇 추가: 어떤 에러인지 출력
+    console.error('API 실패:', data.error);
+    
+  } catch (e) {
+    console.error('fetch 자체 실패:', e); // 👇 catch도 로그 추가
+  }
   return "잠시만 기다려주세요, 운명은 서두르지 않습니다.";
 };
 
