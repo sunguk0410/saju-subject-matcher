@@ -16,7 +16,7 @@ export const fetchAiFortune = async (userData: UserData): Promise<string> => {
     const data = await response.json();
     if (response.ok && data.fortune) return data.fortune;
   } catch {}
-  return "모든 AI가 지쳐서 잠들었습니다. 잠시 후 다시 시도해주세요.";
+  return "잠시만 기다려주세요, 운명은 서두르지 않습니다.";
 };
 
 // 긴 텍스트를 maxWidth에 맞게 줄바꿈해서 그리기

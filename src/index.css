@@ -10,6 +10,11 @@ body {
   @apply font-sans bg-[#1A0F05] text-[#3D1F0A];
 }
 
+.page-bg {
+  position: relative;
+  background: url('/noise.png') repeat;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
