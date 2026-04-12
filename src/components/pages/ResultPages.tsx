@@ -269,8 +269,8 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
 
         {/* 오행 분석 */}
         <div className="text-[10px] text-[#8B6914] font-bold mb-1 uppercase tracking-wider">오행 분석 (五行分析)</div>
-        <div className="flex flex-col items-center bg-white/50 rounded-2xl p-2 border border-[#C8A14B]/20 mb-2">
-          <div className="relative w-[170px] h-[175px]">
+        <div className="relative flex items-center justify-center bg-white/50 rounded-2xl p-2 border border-[#C8A14B]/20 mb-2">
+          <div className="w-[220px] h-[220px]">
             <svg viewBox="-15 -30 230 260" className="w-full h-full">
               <polygon points="100,20 180,80 150,170 50,170 20,80"
                 fill="none" stroke="#C8A14B" strokeWidth="1" strokeDasharray="4,4" opacity="0.3" />
@@ -282,7 +282,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
               <polygon points={polygonPath} fill="rgba(200,161,75,0.4)" stroke="#8B6914" strokeWidth="2" />
               {labelPos.map(({ key, lx, ly, anchor }) => (
                 <g key={key}>
-                  <text x={lx} y={ly} textAnchor={anchor} fontSize="25" fontWeight="bold"
+                  <text x={lx} y={ly} textAnchor={anchor} fontSize="19" fontWeight="bold"
                     fill={OHF[key]} fontFamily="serif">{OHK[key]}</text>
                   <text x={lx + 1} y={ly + 16} textAnchor={anchor} fontSize="13"
                     fill={OHF[key]} fontFamily="sans-serif">
@@ -292,9 +292,9 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
               ))}
             </svg>
           </div>
-          <div className="flex flex-wrap justify-center gap-2 mt-1">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1.5">
             {(['목', '화', '토', '금', '수'] as const).filter(k => elements[k] > 0).map(k => (
-              <span key={k} className={`px-3 py-1 rounded-full text-[13px] font-bold ${OHC[k]}`}>
+              <span key={k} className={`px-2.5 py-1 rounded-full text-[12px] font-bold ${OHC[k]}`}>
                 {OHK[k]} {elements[k]}
               </span>
             ))}

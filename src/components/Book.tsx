@@ -220,9 +220,10 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
       transition={{ duration: 0.5 }}
       className="relative z-50 w-full max-w-[900px] flex flex-col items-center"
     >
+      {/* 닫기 버튼 — 책 바깥 오른쪽 */}
       <button
         onClick={onClose}
-        className="absolute -top-14 -right-2 w-10 h-10 rounded-full bg-[#8B1A1A] text-[#FFD700] flex items-center justify-center font-bold hover:bg-[#6B0A0A] transition-all shadow-lg z-[100] text-xl"
+        className="absolute top-0 -right-12 w-9 h-9 rounded-full bg-[#8B1A1A] text-[#FFD700] flex items-center justify-center font-bold hover:bg-[#6B0A0A] transition-all shadow-lg z-[100] text-base"
       >
         ✕
       </button>
