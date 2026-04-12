@@ -1,64 +1,58 @@
 import { motion } from 'motion/react';
 
 export const CoverPage = () => (
-  <div
-    className="w-full h-full flex items-center justify-center"
-    style={{ background: '#3D200A', fontFamily: "'Noto Serif KR', serif" }}
-  >
-    <div className="relative w-full h-full flex flex-col items-center justify-between select-none"
-      style={{ padding: '18px 16px' }}>
+  <div className="w-full h-full flex justify-center page-bg">
+    <div className="relative" style={{ width: 413, height: 646, fontFamily: "'Noto Serif KR', serif", flexShrink: 0 }}>
 
-      {/* 이중 테두리 */}
-      <div className="absolute pointer-events-none"
-        style={{ inset: 10, border: '1.5px solid rgba(200,161,75,0.55)' }} />
-      <div className="absolute pointer-events-none"
-        style={{ inset: 14, border: '1px solid rgba(200,161,75,0.25)' }} />
+      {/* 숭멋사 로고 배경 */}
+      <div className="absolute pointer-events-none" style={{
+        width: 350, height: 350, left: 30, top: 150,
+        backgroundImage: "url('/숭멋사로고.png')",
+        backgroundSize: 'contain', backgroundRepeat: 'no-repeat',
+        opacity: 0.12,
+      }} />
 
-      {/* 상단 텍스트 */}
-      <div style={{
-        color: '#C8A14B', fontSize: 11, letterSpacing: '0.24em',
-        fontWeight: 600, marginTop: 16,
+      {/* ♦︎과목 궁합 매칭 시스템♦ */}
+      <div className="absolute" style={{
+        width: 189, height: 19, left: 135, top: 72,
+        fontWeight: 600, fontSize: 13, lineHeight: '19px',
+        letterSpacing: '0.22em', color: '#8E5818',
       }}>
-        ♦ 과목 궁합 길잡이 ♦
+        ♦︎과목 궁합 길잡이♦
       </div>
 
-      {/* 메인 제목 */}
-      <div className="flex flex-col items-center" style={{ gap: 10 }}>
-        {/* 八字大學 */}
-        <div style={{
-          color: '#F0E2C0',
-          fontSize: 'clamp(52px, 10vw, 80px)',
-          fontWeight: 800,
-          lineHeight: 1.05,
-          letterSpacing: '-0.01em',
-          fontFamily: 'serif',
-          textShadow: '0 2px 12px rgba(0,0,0,0.5)',
-        }}>
-          八字大學
-        </div>
-
-        {/* 구분선 */}
-        <div style={{
-          width: 120, height: 1,
-          background: 'linear-gradient(to right, transparent, rgba(200,161,75,0.6), transparent)',
-          margin: '2px 0',
-        }} />
-
-        {/* 팔자대학 */}
-        <div style={{
-          color: '#C8A878',
-          fontSize: 18,
-          fontWeight: 500,
-          letterSpacing: '0.45em',
-        }}>
-          팔자대학
-        </div>
+      {/* 八字大學 */}
+      <div className="absolute" style={{
+        width: 264, height: 95, left: 75, top: 199,
+        fontWeight: 700, fontSize: 66, lineHeight: '95px',
+        color: '#54320A',
+      }}>
+        八字大學
       </div>
 
-      {/* 하단 텍스트 */}
-      <div style={{
-        color: '#9A7840', fontSize: 10, letterSpacing: '0.18em',
-        fontWeight: 500, marginBottom: 16,
+      {/* 중간고사 운빨 전략 */}
+      <div className="absolute" style={{
+        width: 181, height: 32, left: 116, top: 297,
+        fontWeight: 600, fontSize: 22, lineHeight: '32px',
+        letterSpacing: '-0.03em', color: '#54320A',
+      }}>
+        중간고사 운빨 전략
+      </div>
+
+      {/* 태어난 기운과 과목의 오행을 분석하여... */}
+      <div className="absolute text-center" style={{
+        width: 316, left: 49, top: 365,
+        fontWeight: 600, fontSize: 15, lineHeight: '26px',
+        letterSpacing: '-0.03em', color: '#54320A',
+      }}>
+        당신의 기운과 과목의 조화를 분석하여,<br />시험운을 극대화할 길잡이가 되어드립니다.
+      </div>
+
+      {/* 시험은 전략, 합격은 천기 */}
+      <div className="absolute" style={{
+        width: 104, left: 155, top: 574,
+        fontWeight: 600, fontSize: 10, lineHeight: '14px',
+        letterSpacing: '-0.03em', color: '#8E5818',
       }}>
         시험은 전략, 합격은 천기
       </div>

@@ -233,69 +233,33 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
         ✕
       </button>
 
-      {/* ── 3D 책 외형 (척추 + 본체 + 페이지 단면) ── */}
-      <div
-        className="w-full flex items-stretch"
-        style={{
-          filter: 'drop-shadow(0 28px 55px rgba(0,0,0,0.95)) drop-shadow(6px 6px 18px rgba(0,0,0,0.7))',
-        }}
-      >
-        {/* 척추(Spine) — 왼쪽 */}
+      <div className="w-full bg-[#2D1B0E] rounded-2xl p-4 border-4 border-[#5C3010] shadow-[0_25px_60px_rgba(0,0,0,0.9)]">
+        {/* 책 본체 */}
         <div
-          className="flex-shrink-0 w-[22px] rounded-l-2xl flex flex-col items-center justify-between py-6"
-          style={{
-            background: 'linear-gradient(to right, #080401 0%, #1C0A04 20%, #3A1C0A 50%, #251005 80%, #100602 100%)',
-            border: '4px solid #120702',
-            borderRight: 'none',
-            boxShadow: 'inset -4px 0 8px rgba(0,0,0,0.6)',
-          }}
+          className="relative w-full bg-[#FAF3DC] rounded-xl overflow-hidden flex shadow-inner"
+          style={{ perspective: '2000px', height: bookHeight }}
         >
-          {/* 척추 장식 */}
-          <div style={{ width: 1, flex: 1, background: 'rgba(200,161,75,0.18)', margin: '4px 0' }} />
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(200,161,75,0.25)' }} />
-          <div style={{ width: 1, flex: 1, background: 'rgba(200,161,75,0.18)', margin: '4px 0' }} />
-        </div>
+          {/* 중앙 제본 선 */}
+          <div className="absolute left-1/2 -translate-x-1/2 w-[6px] h-full bg-gradient-to-r from-[rgba(0,0,0,0.4)] via-[rgba(200,161,75,0.1)] to-[rgba(0,0,0,0.4)] z-30 pointer-events-none" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-20 pointer-events-none z-0" />
 
-        {/* ── 본체 (표지 + 페이지) ── */}
-        <div
-          className="flex-1 bg-[#2D1B0E] rounded-r-2xl p-4 border-4 border-l-0 border-[#5C3010]"
-          style={{ boxShadow: 'inset 0 0 30px rgba(0,0,0,0.3)' }}
-        >
-          {/* 책 페이지 영역 */}
-          <div
-            className="relative w-full bg-[#FAF3DC] rounded-r-xl overflow-hidden flex shadow-inner"
-            style={{ perspective: '2000px', height: bookHeight }}
-          >
-            {/* 중앙 제본 선 */}
-            <div className="absolute left-1/2 -translate-x-1/2 w-[6px] h-full bg-gradient-to-r from-[rgba(0,0,0,0.4)] via-[rgba(200,161,75,0.1)] to-[rgba(0,0,0,0.4)] z-30 pointer-events-none" />
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-20 pointer-events-none z-0" />
-
-            {/* ── 배경 스프레드 (displayedCur 기준) ── */}
-            <div className="absolute inset-0 flex">
-              {/* 왼쪽 페이지 */}
-              <div className="w-1/2 h-full bg-[#F5EDD0] border-r border-[#C8A14B]/30 relative overflow-hidden">
-                <div className="absolute right-0 inset-y-0 w-[30px] bg-gradient-to-l from-[rgba(80,40,5,0.15)] to-transparent pointer-events-none z-[10]" />
-                <div className="h-full overflow-y-auto no-scrollbar">
-                  <PageContent type={SPREADS[displayedCur].l} {...pageProps} pageNumber={displayedCur * 2} onNext={handleNext} />
-                </div>
-              </div>
-              {/* 오른쪽 페이지 */}
-              <div className="w-1/2 h-full bg-[#FAF3DC] relative overflow-hidden">
-                <div className="absolute left-0 inset-y-0 w-[30px] bg-gradient-to-r from-[rgba(80,40,5,0.15)] to-transparent pointer-events-none z-[10]" />
-                <div className="h-full overflow-y-auto no-scrollbar">
-                  <PageContent type={SPREADS[displayedCur].r} {...pageProps} pageNumber={displayedCur * 2 + 1} onNext={handleNext} />
-                </div>
+          {/* ── 배경 스프레드 (displayedCur 기준) ── */}
+          <div className="absolute inset-0 flex">
+            {/* 왼쪽 페이지 */}
+            <div className="w-1/2 h-full bg-[#F5EDD0] border-r border-[#C8A14B]/30 relative overflow-hidden">
+              <div className="absolute right-0 inset-y-0 w-[30px] bg-gradient-to-l from-[rgba(80,40,5,0.15)] to-transparent pointer-events-none z-[10]" />
+              <div className="h-full overflow-y-auto no-scrollbar">
+                <PageContent type={SPREADS[displayedCur].l} {...pageProps} pageNumber={displayedCur * 2} onNext={handleNext} />
               </div>
             </div>
-
-            {/* 페이지 단면 — 오른쪽 끝 */}
-            <div
-              className="absolute right-0 top-0 bottom-0 w-[10px] z-[25] pointer-events-none"
-              style={{
-                background: 'repeating-linear-gradient(to bottom, #D2C5AC 0px, #D2C5AC 1px, #EDE2C8 1px, #EDE2C8 3px)',
-                borderLeft: '1px solid rgba(0,0,0,0.12)',
-              }}
-            />
+            {/* 오른쪽 페이지 */}
+            <div className="w-1/2 h-full bg-[#FAF3DC] relative overflow-hidden">
+              <div className="absolute left-0 inset-y-0 w-[30px] bg-gradient-to-r from-[rgba(80,40,5,0.15)] to-transparent pointer-events-none z-[10]" />
+              <div className="h-full overflow-y-auto no-scrollbar">
+                <PageContent type={SPREADS[displayedCur].r} {...pageProps} pageNumber={displayedCur * 2 + 1} onNext={handleNext} />
+              </div>
+            </div>
+          </div>
 
           {/* ── 3D 플립 애니메이션 ── */}
           {isFlipping && flipInfo && (
@@ -430,8 +394,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
             ✦ 중간고사 특별판 ✦
           </div>
         </div>
-        </div>{/* 본체 닫기 */}
-      </div>{/* 3D 래퍼 닫기 */}
+      </div>
     </motion.div>
   );
 }
