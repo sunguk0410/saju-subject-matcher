@@ -66,6 +66,10 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
   const [mobileAnim, setMobileAnim] = useState(false);
 
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  // 뷰포트 높이 기준 동적 책 높이: 네비(~90px) + 래퍼 패딩/보더(~48px) + 여유(~52px) = 190px 차감
+  const calcBookHeight = () => Math.min(650, Math.max(480, window.innerHeight - 190));
+  const [bookHeight, setBookHeight] = useState(calcBookHeight);
+
   const curRef = useRef(cur);
   const mobilePageRef = useRef(mobilePage);
   useEffect(() => { curRef.current = cur; }, [cur]);
@@ -73,6 +77,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
 
   useEffect(() => {
     const onResize = () => {
+      setBookHeight(calcBookHeight());
       const mobile = window.innerWidth < 768;
       setIsMobile(prev => {
         if (prev !== mobile) {
@@ -231,8 +236,8 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
       <div className="w-full bg-[#2D1B0E] rounded-2xl p-4 border-4 border-[#5C3010] shadow-[0_25px_60px_rgba(0,0,0,0.9)]">
         {/* 책 본체 */}
         <div
-          className="relative w-full h-[650px] bg-[#FAF3DC] rounded-xl overflow-hidden flex shadow-inner"
-          style={{ perspective: '2000px' }}
+          className="relative w-full bg-[#FAF3DC] rounded-xl overflow-hidden flex shadow-inner"
+          style={{ perspective: '2000px', height: bookHeight }}
         >
           {/* 중앙 제본 선 */}
           <div className="absolute left-1/2 -translate-x-1/2 w-[6px] h-full bg-gradient-to-r from-[rgba(0,0,0,0.4)] via-[rgba(200,161,75,0.1)] to-[rgba(0,0,0,0.4)] z-30 pointer-events-none" />

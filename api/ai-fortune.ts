@@ -7,38 +7,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return res.status(400).json({ error: 'OpenAI API Key가 없습니다.' });
 
-  const { name, subjects, saju } = req.body;
+  const { name, saju } = req.body;
   if (!name || !saju) return res.status(400).json({ error: '입력값이 부족합니다.' });
 
   const client = new OpenAI({ apiKey });
   const formatPillar = (p: any) => `${p?.sky ?? ''}${p?.earth ?? ''}`;
 
-  const sajuText = `
-  연:${formatPillar(saju.year)}
-  월:${formatPillar(saju.month)}
-  일:${formatPillar(saju.day)}
-  시:${formatPillar(saju.hour)}
-  `;
-
   try {
     const response = await client.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 100,
+      max_tokens: 150,
       messages: [
         {
-            role: 'system',
-            content: `너는 사주 전문가이자 대학생들의 마음을 꿰뚫는 '시험기간 전문 역술가'야. 
-            사용자의 사주 정보(오행)를 바탕으로 팩트 폭행을 섞어서 한줄로 간단하게 작성해줘`
+          role: 'system',
+          content: `Role: 시험기간 대학생 팩폭 무당
+Tone: 근엄한 역술가 말투 + 최신 대학생 밈(에타, 재수강, 카공 등)
+Task: 오행 기반 시험기간 운명 총평
+
+[Constraint]
+- 팩트 폭격 후 황당한 처방전으로 마무리.
+- UI 가독성을 위해 전체 답변은 공백 포함 120자 이내로 제한.
+- 텍스트가 칸을 넘지 않도록 문장을 극도로 압축할 것.
+
+[Output Format]
+[한 줄 요약: 20자 이내]
+[사주 기반 팩폭 및 처방: 2문장, 80자 이내]`,
         },
         {
           role: 'user',
           content: `이름: ${name}
-          사주:
-          - 연주: ${formatPillar(saju.year)} (${saju.year.sky}은 천간, ${saju.year.earth}은 지지)
-          - 월주: ${formatPillar(saju.month)}
-          - 일주: ${formatPillar(saju.day)}
-          - 시주: ${formatPillar(saju.hour)}
-          위 정보를 바탕으로 반드시 규칙을 지켜 한 문장으로만 답해.`        },
+사주: 연주 ${formatPillar(saju.year)} / 월주 ${formatPillar(saju.month)} / 일주 ${formatPillar(saju.day)} / 시주 ${formatPillar(saju.hour)}
+위 사주를 바탕으로 Output Format에 맞게 답하라.`,
+        },
       ],
     });
 

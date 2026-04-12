@@ -20,42 +20,40 @@ async function startServer() {
   }
 
   app.post("/api/ai-fortune", async (req, res) => {
-
     if (!apiKey) return res.status(400).json({ error: "OpenAI API Key가 없습니다." });
 
-    const { name, subjects, saju } = req.body;
-
+    const { name, saju } = req.body;
     if (!name || !saju) return res.status(400).json({ error: "입력값이 부족합니다." });
 
     const client = new OpenAI({ apiKey });
-    const formatPillar = (p: any) => `${p?.sky ?? ''}${p?.earth ?? ''}`;
-
-    const sajuText = `
-    연:${formatPillar(saju.year)}
-    월:${formatPillar(saju.month)}
-    일:${formatPillar(saju.day)}
-    시:${formatPillar(saju.hour)}
-    `;
+    const formatPillar = (p: any) => `${p?.sky ?? ""}${p?.earth ?? ""}`;
 
     try {
       const response = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        max_tokens: 100,
+        model: "gpt-4o-mini",
+        max_tokens: 150,
         messages: [
           {
-            role: 'system',
-            content: `너는 사주 전문가이자 대학생들의 마음을 꿰뚫는 '시험기간 전문 역술가'야. 
-            사용자의 사주 정보(오행)를 바탕으로 팩트 폭행을 섞어서 한줄로 간단하게 작성해줘`
+            role: "system",
+            content: `Role: 시험기간 대학생 팩폭 무당
+Tone: 근엄한 역술가 말투 + 최신 대학생 밈(에타, 재수강, 카공 등)
+Task: 오행 기반 시험기간 운명 총평
+
+[Constraint]
+- 팩트 폭격 후 황당한 처방전으로 마무리.
+- UI 가독성을 위해 전체 답변은 공백 포함 120자 이내로 제한.
+- 텍스트가 칸을 넘지 않도록 문장을 극도로 압축할 것.
+
+[Output Format]
+[한 줄 요약: 20자 이내]
+[사주 기반 팩폭 및 처방: 2문장, 80자 이내]`,
           },
           {
-            role: 'user',
+            role: "user",
             content: `이름: ${name}
-            사주:
-            - 연주: ${formatPillar(saju.year)} (${saju.year.sky}은 천간, ${saju.year.earth}은 지지)
-            - 월주: ${formatPillar(saju.month)}
-            - 일주: ${formatPillar(saju.day)}
-            - 시주: ${formatPillar(saju.hour)}
-            위 정보를 바탕으로 반드시 규칙을 지켜 한 문장으로만 답해.`          },
+사주: 연주 ${formatPillar(saju.year)} / 월주 ${formatPillar(saju.month)} / 일주 ${formatPillar(saju.day)} / 시주 ${formatPillar(saju.hour)}
+위 사주를 바탕으로 Output Format에 맞게 답하라.`,
+          },
         ],
       });
 
@@ -79,24 +77,24 @@ async function startServer() {
 
     try {
       const response = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        max_tokens: 100,
+        model: "gpt-4o-mini",
+        max_tokens: 80,
         messages: [
           {
-            role: 'system',
-            content: `너는 대학생 전공 과목의 운명을 점치는 ‘학업 전문 무당’이다.
-            사용자의 [오행 기운]과 [과목명]을 바탕으로 시험 조언을 작성하라.
+            role: "system",
+            content: `Role: 전공 과목별 운명 역술가
+Task: 과목명과 사용자 오행의 상관관계 분석 및 비책 하사
 
-            [작성 규칙]
-            - 반드시 1~2문장으로 작성할 것
-            - 과목과 오행의 관계, 재밌는 해결책을 모두 포함할 것
-            - 말투는 옛날 무당 + 현대 밈을 섞어 사용할 것
+[Constraint]
+- 과목 특성(암기/계산 등)을 사주상 액운(煞)으로 묘사.
+- 오행 상극/상생을 활용한 기상천외한 해결책 제시.
+- 반드시 한 줄로만 출력하며, 50자를 넘지 말 것.
 
-            [예시]
-            자료구조… 너의 화(火)와 이 과목의 수(水)가 상극이니 이해 안 되는 게 정상이다. 답 없으니 교수님 PPT에 절 한 번 하고 가라.`
+[Output Format]
+[병맛 해결책 한 줄]`,
           },
           {
-            role: 'user',
+            role: "user",
             content: `시험 과목: ${subject}\n사주/운세: ${keywords}`,
           },
         ],
