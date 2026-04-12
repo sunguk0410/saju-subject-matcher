@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -7,6 +7,7 @@ import {
   BYEONGMAT_COMMENTS, HANJA_INFO,
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
+import { fetchSubjComment } from '../../lib/utils';
 
 const PENTAGON = [
   { key: '목', x: 100, y: 20  },
@@ -308,17 +309,50 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
   );
 };
 
+const getSubjOh = (name: string) => {
+  const hash = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return Object.keys(OHK)[hash % Object.keys(OHK).length];
+};
+
 export const SubjCompatPage = ({ myData, onSave }: any) => {
+  const [aiComments, setAiComments] = useState<Record<number, string>>({});
+  const [loadingComments, setLoadingComments] = useState(false);
+
+  useEffect(() => {
+    if (!myData) return;
+    const s = myData.saju;
+    const sv = getSajuValue(s);
+    const myOh = getFiveElements(s);
+
+    setLoadingComments(true);
+    setAiComments({});
+
+    const promises = myData.subjects.map((subj: string, i: number) => {
+      const oh = getSubjOh(subj);
+      const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
+      const topEls = Object.entries(myOh as Record<string, number>)
+        .filter(([, v]) => v > 0)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3)
+        .map(([k, v]) => `${OHK[k]}(${v})`)
+        .join(' ');
+      const keywords = `과목 오행: ${OHK[oh]}, 사주 오행: ${topEls}, 궁합 점수: ${score}점`;
+      return fetchSubjComment(subj, keywords).then(comment => ({ i, comment }));
+    });
+
+    Promise.all(promises).then(results => {
+      const map: Record<number, string> = {};
+      results.forEach(({ i, comment }) => { if (comment) map[i] = comment; });
+      setAiComments(map);
+      setLoadingComments(false);
+    });
+  }, [myData]);
+
   if (!myData) return <LoadingPlaceholder text="과목 입력 후 공개됩니다" />;
 
   const s = myData.saju;
   const sv = getSajuValue(s);
   const myOh = getFiveElements(s);
-
-  const getSubjOh = (name: string) => {
-    const hash = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return Object.keys(OHK)[hash % Object.keys(OHK).length];
-  };
 
   return (
     <div className="w-full h-full page-bg">
@@ -336,11 +370,13 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
             const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
             const scoreColor = score >= 80 ? '#2E7D32' : score >= 60 ? '#C8A14B' : '#8B1A1A';
             const scoreText = score >= 80 ? 'text-[#2E7D32]' : score >= 60 ? 'text-[#C8A14B]' : 'text-[#8B1A1A]';
-            const comment = score >= 80
+            const fallback = score >= 80
               ? '이 과목은 당신의 기운과 찰떡궁합! 공부한 만큼 성적이 나올 것이로다.'
               : score >= 60
               ? '무난한 궁합이다. 노력이 배신하지는 않을 것이니 정진하라.'
               : '기운이 충돌한다! 남들보다 두 배는 더 노력해야 평타라도 칠 것이로다.';
+            const comment = aiComments[i] || fallback;
+            const isLoading = loadingComments && !aiComments[i];
             return (
               <div key={i} className="bg-white/40 border border-[#C8A14B]/20 rounded-xl p-2.5 shadow-sm">
                 <div className="flex justify-between items-center mb-1.5">
@@ -354,7 +390,14 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
                   <div className="h-full rounded-full transition-all duration-1000"
                     style={{ width: `${score}%`, backgroundColor: scoreColor }} />
                 </div>
-                <div className="text-[10px] text-[#5C3010] italic leading-tight">{comment}</div>
+                <div className="text-[10px] text-[#5C3010] italic leading-tight min-h-[14px]">
+                  {isLoading ? (
+                    <span className="flex items-center gap-1">
+                      <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="inline-block">🌀</motion.span>
+                      <span>운명의 실을 읽는 중...</span>
+                    </span>
+                  ) : comment}
+                </div>
               </div>
             );
           })}

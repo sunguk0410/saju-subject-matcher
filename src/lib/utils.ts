@@ -34,6 +34,21 @@ export const fetchAiFortune = async (userData: UserData): Promise<string> => {
   return "잠시만 기다려주세요, 운명은 서두르지 않습니다.";
 };
 
+export const fetchSubjComment = async (subject: string, keywords: string): Promise<string> => {
+  try {
+    const response = await fetch('/api/subj-comment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subject, keywords }),
+    });
+    const data = await response.json();
+    if (response.ok && data.comment) return data.comment;
+  } catch (e) {
+    console.error('subj-comment fetch 실패:', e);
+  }
+  return '';
+};
+
 // 긴 텍스트를 maxWidth에 맞게 줄바꿈해서 그리기
 function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number): number {
   const words = text.split('');
