@@ -1,8 +1,10 @@
-import { motion } from 'motion/react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   getSajuValue, getFiveElements, pick,
   OHC, OHK, OHF, SajuPillar,
-  BYEONGMAT_COMMENTS,
+  BYEONGMAT_COMMENTS, HANJA_INFO,
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
 
@@ -15,6 +17,179 @@ const PENTAGON = [
 ];
 
 const PILLAR_LABELS = ['년', '월', '일', '시'] as const;
+
+// ── 한자 상세 팝업 ──────────────────────────────────────────────
+const HanjaModal = ({ char, onClose }: { char: string; onClose: () => void }) => {
+  const info = HANJA_INFO[char];
+  if (!info) return null;
+
+  const elementColor: Record<string, string> = {
+    '목(木)': '#2E7D32', '화(火)': '#C62828',
+    '토(土)': '#E65100', '금(金)': '#37474F', '수(水)': '#1565C0',
+  };
+  const elemBg: Record<string, string> = {
+    '목(木)': '#E8F5E9', '화(火)': '#FFEBEE',
+    '토(土)': '#FFF8E1', '금(金)': '#ECEFF1', '수(水)': '#E3F2FD',
+  };
+  const color = elementColor[info.element] ?? '#8B6914';
+  const bg = elemBg[info.element] ?? '#FFF8E1';
+
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[300] flex items-center justify-center p-4"
+      style={{ background: 'rgba(10,5,0,0.75)', backdropFilter: 'blur(3px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.88, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.88, y: 12 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+        className="relative max-w-[300px] w-full rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
+        style={{
+          background: '#1E110A',
+          border: '1.5px solid rgba(200,161,75,0.5)',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* 상단 헤더 */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2 border-b border-[#C8A14B]/20">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] font-bold tracking-widest uppercase"
+              style={{ color: 'rgba(200,161,75,0.6)' }}>
+              {info.type === '천간' ? '天干 · 하늘의 기운' : '地支 · 땅의 기운'}
+            </span>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold transition-colors"
+            style={{ color: 'rgba(200,161,75,0.5)', background: 'rgba(200,161,75,0.08)' }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* 메인 내용 */}
+        <div className="px-4 py-3">
+          {/* 한자 + 독음 */}
+          <div className="flex items-end gap-3 mb-3">
+            <div
+              className="text-[52px] font-serif font-bold leading-none"
+              style={{ color: info.type === '천간' ? '#A0C4F0' : '#F0A090' }}
+            >
+              {char}
+            </div>
+            <div className="pb-1">
+              <div className="text-[22px] font-serif font-bold leading-none mb-0.5"
+                style={{ color: 'rgba(255,245,220,0.9)' }}>
+                {info.reading}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                  style={{ background: bg, color }}>
+                  {info.element}
+                </span>
+                <span className="text-[10px]" style={{ color: 'rgba(200,161,75,0.7)' }}>
+                  {info.yinyang}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 지지 동물 / 시간대 */}
+          {info.animal && (
+            <div className="flex gap-3 mb-2.5">
+              <div className="flex-1 bg-[rgba(200,161,75,0.08)] rounded-lg px-2.5 py-1.5 text-center border border-[rgba(200,161,75,0.15)]">
+                <div className="text-[9px] mb-0.5" style={{ color: 'rgba(200,161,75,0.5)' }}>동물</div>
+                <div className="text-[13px] font-bold" style={{ color: 'rgba(255,245,220,0.85)' }}>{info.animal}</div>
+              </div>
+              <div className="flex-1 bg-[rgba(200,161,75,0.08)] rounded-lg px-2.5 py-1.5 text-center border border-[rgba(200,161,75,0.15)]">
+                <div className="text-[9px] mb-0.5" style={{ color: 'rgba(200,161,75,0.5)' }}>시간대</div>
+                <div className="text-[11px] font-bold" style={{ color: 'rgba(255,245,220,0.85)' }}>{info.time}</div>
+              </div>
+            </div>
+          )}
+
+          {/* 상징 의미 */}
+          <div className="mb-2.5">
+            <div className="text-[9px] font-bold uppercase tracking-wider mb-1"
+              style={{ color: 'rgba(200,161,75,0.55)' }}>
+              ✦ 상징과 의미
+            </div>
+            <p className="text-[11px] leading-relaxed italic"
+              style={{ color: 'rgba(255,245,220,0.78)' }}>
+              {info.meaning}
+            </p>
+          </div>
+
+          {/* 사주에서의 역할 */}
+          <div className="bg-[rgba(200,161,75,0.07)] rounded-xl px-3 py-2.5 border-l-2 border-[rgba(200,161,75,0.35)]">
+            <div className="text-[9px] font-bold uppercase tracking-wider mb-1"
+              style={{ color: 'rgba(200,161,75,0.55)' }}>
+              ✦ 사주에서의 역할
+            </div>
+            <p className="text-[11px] leading-relaxed"
+              style={{ color: 'rgba(255,245,220,0.75)' }}>
+              {info.role}
+            </p>
+          </div>
+        </div>
+
+        {/* 하단 장식 */}
+        <div className="px-4 pb-3 pt-1 text-center">
+          <span className="text-[8px] tracking-[0.3em]"
+            style={{ color: 'rgba(200,161,75,0.25)' }}>
+            ✦ 팔자대학 한자 풀이 ✦
+          </span>
+        </div>
+      </motion.div>
+    </motion.div>,
+    document.body
+  );
+};
+
+// ── 한자 + i 아이콘 ──────────────────────────────────────────────
+const HanjaChar = ({
+  char,
+  colorClass,
+  size = 'text-[18px]',
+}: {
+  char: string;
+  colorClass: string;
+  size?: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  const hasInfo = Boolean(HANJA_INFO[char]);
+
+  return (
+    <>
+      <div className="inline-flex items-start justify-center relative group">
+        <span className={`${size} font-bold font-serif ${colorClass} leading-tight`}>{char}</span>
+        {hasInfo && (
+          <button
+            onClick={e => { e.stopPropagation(); setOpen(true); }}
+            className="ml-0.5 mt-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] font-bold transition-all shrink-0 opacity-60 hover:opacity-100 active:scale-90"
+            style={{
+              background: 'rgba(200,161,75,0.15)',
+              border: '1px solid rgba(200,161,75,0.5)',
+              color: '#8B6914',
+              lineHeight: 1,
+            }}
+            aria-label={`${char} 한자 풀이`}
+          >
+            i
+          </button>
+        )}
+      </div>
+      <AnimatePresence>
+        {open && <HanjaModal char={char} onClose={() => setOpen(false)} />}
+      </AnimatePresence>
+    </>
+  );
+};
 
 export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
   if (!myData) return <LoadingPlaceholder text="사주 입력 후 공개됩니다" />;
@@ -49,10 +224,10 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
           {new Date(myData.date).getFullYear()}년생 · {s.zodiac}띠
         </div>
 
-        {/* AI 한줄 요약 */}
-        <div className="bg-[#8B1A1A]/10 border-2 border-[#8B1A1A]/30 rounded-xl p-3 mb-3 shadow-sm">
-          <div className="text-[10px] text-[#8B1A1A] font-bold mb-1 flex items-center gap-2">
-            <span className="text-base">🤖</span> 하늘이 내린 전언
+        {/* 하늘이 내린 전언 */}
+        <div className="bg-[#C8A14B]/10 border-2 border-[#C8A14B]/30 rounded-xl p-3 mb-3 shadow-sm">
+          <div className="text-[10px] text-[#8B6914] font-bold mb-1 flex items-center gap-2">
+            <span className="text-base">✦</span> 하늘이 내린 전언
           </div>
           <div className="text-[13px] text-[#3D1F0A] italic leading-relaxed min-h-[30px] flex items-center font-medium">
             {loadingAi ? (
@@ -69,14 +244,22 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
 
         {/* 사주 팔자 */}
         <div className="text-[10px] text-[#8B6914] font-bold mb-0.5 uppercase tracking-wider">사주 팔자 (四柱八字)</div>
-        <p className="text-[9px] text-[#A09060] italic mb-1">* 년·월·일·시주는 태어난 연도·달·날짜·시간을 의미합니다.</p>
+        <p className="text-[9px] text-[#A09060] italic mb-1.5">
+          * 년·월·일·시주는 태어난 연도·달·날짜·시간을 의미합니다. &nbsp;
+          <span className="not-italic text-[#C8A14B]/70 font-bold">ⓘ</span>
+          <span> 아이콘을 눌러 한자를 풀어보세요.</span>
+        </p>
         <div className="grid grid-cols-4 gap-1.5 mb-3">
           {(['year', 'month', 'day', 'hour'] as const).map((k, i) => {
             const pillar = s[k] as SajuPillar;
             return (
               <div key={k} className="text-center bg-white border-2 border-[#C8A14B]/30 rounded-lg p-1.5 shadow-sm">
-                <div className="text-[18px] font-bold font-serif text-[#003087] leading-tight">{pillar.sky}</div>
-                <div className="text-[18px] font-bold font-serif text-[#8B2500] leading-tight">{pillar.earth}</div>
+                <div className="flex items-start justify-center">
+                  <HanjaChar char={pillar.sky} colorClass="text-[#003087]" />
+                </div>
+                <div className="flex items-start justify-center">
+                  <HanjaChar char={pillar.earth} colorClass="text-[#8B2500]" />
+                </div>
                 <div className="text-[9px] text-[#A09060] mt-0.5 font-bold">{PILLAR_LABELS[i]}주</div>
               </div>
             );

@@ -18,7 +18,7 @@ export const CoverPage = () => (
         fontWeight: 600, fontSize: 13, lineHeight: '19px',
         letterSpacing: '0.22em', color: '#8E5818',
       }}>
-        ♦︎과목 궁합 매칭 시스템♦
+        ♦︎과목 궁합 길잡이♦
       </div>
 
       {/* 八字大學 */}
@@ -45,7 +45,7 @@ export const CoverPage = () => (
         fontWeight: 600, fontSize: 15, lineHeight: '26px',
         letterSpacing: '-0.03em', color: '#54320A',
       }}>
-        태어난 기운과 과목의 오행을 분석하여<br />최적의 시험전략을 제안하는 시스템입니다
+        당신의 기운과 과목의 조화를 분석하여,<br />시험운을 극대화할 길잡이가 되어드립니다.
       </div>
 
       {/* 시험은 전략, 합격은 천기 */}

@@ -29,7 +29,7 @@ export const SharePage = ({ myData }: any) => {
 
         <div className="bg-[#C8A14B]/10 border-2 border-[#C8A14B]/30 rounded-xl p-3.5 mb-3 shadow-sm">
           <div className="text-[12px] text-[#8B6914] font-bold mb-2 flex items-center gap-2">
-            <span>📚</span> 시험공부 팁 (Study Tips)
+            <span>📚</span> 시험공부 팁
           </div>
           <ul className="text-[11px] text-[#3D1F0A] space-y-1.5 list-disc pl-4 font-medium">
             {tips.map(([before, highlight, after], i) => (
@@ -41,7 +41,7 @@ export const SharePage = ({ myData }: any) => {
 
         <div className="bg-[#8B1A1A]/5 border-2 border-[#8B1A1A]/30 rounded-xl p-3.5 mb-3 shadow-sm">
           <div className="text-[12px] text-[#8B1A1A] font-bold mb-2 flex items-center gap-2">
-            <span>😈</span> 딴짓 저주 (Fishing Curse)
+            <span>😈</span> 딴짓 저주
           </div>
           <div className="space-y-2.5">
             <div className="text-[10px] text-[#5C1608] leading-relaxed">

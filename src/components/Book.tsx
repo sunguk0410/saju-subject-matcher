@@ -199,7 +199,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
             <span className="text-[#C8A14B]/60 text-[10px] font-serif tracking-[0.2em]">✦ 중간고사 특별판 ✦</span>
             <button
               onClick={handleNext}
-              disabled={mobilePage === ALL_PAGES.length - 1 || mobileAnim || (mobilePage === 1 && !myData)}
+              disabled={mobilePage === ALL_PAGES.length - 1 || mobileAnim || mobilePage === 1}
               className="flex items-center gap-1 px-4 py-2 rounded-full bg-[#C8A14B] text-[#3D1F0A] font-bold text-sm disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#E8C060] transition-all shadow-md active:scale-95"
             >
               <span>다음</span>
@@ -377,7 +377,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
 
             <button
               onClick={handleNext}
-              disabled={cur === SPREADS.length - 1 || isFlipping || (cur === 0 && !myData)}
+              disabled={cur === SPREADS.length - 1 || isFlipping || cur === 0}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8A14B] text-[#3D1F0A] font-bold disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#E8C060] transition-all shadow-md active:scale-95"
             >
               <span className="text-[11px] uppercase tracking-tighter">다음</span>
