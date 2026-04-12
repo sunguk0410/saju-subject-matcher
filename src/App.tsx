@@ -23,13 +23,14 @@ export default function App() {
   const fetchGenRef = useRef(0);
   const isInitialRender = useRef(true);
 
-  // 폼 제출로 myData가 새로 바뀔 때만 fetch (마운트 시 localStorage 복원은 제외)
+  // 폼 제출로 myData가 새로 바뀔 때만 fetch (마운트 시 localStorage 복원은 제외, 이미 결과 있으면 스킵)
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;
     }
     if (!myData) return;
+    if (aiFortune) return;
     const gen = ++fetchGenRef.current;
     setLoadingAi(true);
     fetchAiFortune(myData).then(fortune => {

@@ -22,7 +22,7 @@ export default function PageContent({ type, myData, setMyData, draftMyData, setD
   const renderContent = () => {
     switch (type) {
       case 'cover': return <CoverPage />;
-      case 'myForm': return <MyForm draftMyData={draftMyData} setDraftMyData={setDraftMyData} setMyData={setMyData} setAiFortune={setAiFortune} onNext={onNext} />;
+      case 'myForm': return <MyForm draftMyData={draftMyData} setDraftMyData={setDraftMyData} setMyData={setMyData} onNext={onNext} />;
       case 'myR1': return <MyResult1 myData={myData} aiFortune={aiFortune} loadingAi={loadingAi} onSave={() => myData && handleSaveImage(myData, aiFortune, '나의사주_결과')} />;
       case 'subjCompat': return <SubjCompatPage myData={myData} onSave={() => myData && handleSaveSubjCompat(myData, '과목궁합_결과')} />;
       case 'share': return <SharePage myData={myData} />;

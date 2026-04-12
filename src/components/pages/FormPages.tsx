@@ -23,7 +23,7 @@ const inputBase = 'w-full p-2 border-2 rounded-lg bg-white/60 text-[13px] focus:
 const inputNormal = `${inputBase} border-[#C8A14B]/40 focus:border-[#8B1A1A]`;
 const inputError  = `${inputBase} border-red-500 focus:border-red-600`;
 
-export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, onNext }: any) => {
+export const MyForm = ({ draftMyData, setDraftMyData, setMyData, onNext }: any) => {
   const { name, date, hour, subjects } = draftMyData;
   const [touched, setTouched] = useState(false);
 
@@ -45,7 +45,6 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
       saju: calculateSaju(date, hour),
     };
     setMyData(userData);
-    setAiFortune('');
     onNext();
   };
 

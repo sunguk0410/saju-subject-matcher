@@ -320,6 +320,14 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
 
   useEffect(() => {
     if (!myData) return;
+
+    const cacheKey = `subjComments_${myData.name}_${myData.date}_${myData.subjects.join(',')}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      setAiComments(JSON.parse(cached));
+      return;
+    }
+
     const s = myData.saju;
     const sv = getSajuValue(s);
     const myOh = getFiveElements(s);
@@ -345,6 +353,7 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
       results.forEach(({ i, comment }) => { if (comment) map[i] = comment; });
       setAiComments(map);
       setLoadingComments(false);
+      localStorage.setItem(cacheKey, JSON.stringify(map));
     });
   }, [myData]);
 
