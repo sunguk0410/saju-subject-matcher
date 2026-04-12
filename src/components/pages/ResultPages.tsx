@@ -368,14 +368,8 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
           {myData.subjects.map((subj: string, i: number) => {
             const oh = getSubjOh(subj);
             const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
-            const scoreColor = score >= 80 ? '#2E7D32' : score >= 60 ? '#C8A14B' : '#8B1A1A';
-            const scoreText = score >= 80 ? 'text-[#2E7D32]' : score >= 60 ? 'text-[#C8A14B]' : 'text-[#8B1A1A]';
-            const fallback = score >= 80
-              ? '이 과목은 당신의 기운과 찰떡궁합! 공부한 만큼 성적이 나올 것이로다.'
-              : score >= 60
-              ? '무난한 궁합이다. 노력이 배신하지는 않을 것이니 정진하라.'
-              : '기운이 충돌한다! 남들보다 두 배는 더 노력해야 평타라도 칠 것이로다.';
-            const comment = aiComments[i] || fallback;
+            const elementColor = OHF[oh];
+            const comment = aiComments[i];
             const isLoading = loadingComments && !aiComments[i];
             return (
               <div key={i} className="bg-white/40 border border-[#C8A14B]/20 rounded-xl p-2.5 shadow-sm">
@@ -384,11 +378,11 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${OHC[oh]}`}>{OHK[oh]}</span>
                     <span className="text-[13px] font-bold text-[#3D1F0A]">{subj}</span>
                   </div>
-                  <span className={`text-[16px] font-serif font-bold ${scoreText}`}>{score}점</span>
+                  <span className="text-[16px] font-serif font-bold" style={{ color: elementColor }}>{score}점</span>
                 </div>
                 <div className="h-1 bg-[#C8A14B]/10 rounded-full overflow-hidden mb-1.5">
                   <div className="h-full rounded-full transition-all duration-1000"
-                    style={{ width: `${score}%`, backgroundColor: scoreColor }} />
+                    style={{ width: `${score}%`, backgroundColor: elementColor }} />
                 </div>
                 <div className="text-[10px] text-[#5C3010] italic leading-tight min-h-[14px]">
                   {isLoading ? (

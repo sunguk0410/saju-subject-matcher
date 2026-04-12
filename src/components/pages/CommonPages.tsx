@@ -14,7 +14,7 @@ export const CoverPage = () => (
 
       {/* ♦︎과목 궁합 매칭 시스템♦ */}
       <div className="absolute" style={{
-        width: 189, height: 19, left: 112, top: 72,
+        width: 189, height: 19, left: 135, top: 72,
         fontWeight: 600, fontSize: 13, lineHeight: '19px',
         letterSpacing: '0.22em', color: '#8E5818',
       }}>
