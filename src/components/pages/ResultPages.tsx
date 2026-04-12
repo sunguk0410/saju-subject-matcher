@@ -52,7 +52,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
         {/* AI 한줄 요약 */}
         <div className="bg-[#8B1A1A]/10 border-2 border-[#8B1A1A]/30 rounded-xl p-3 mb-3 shadow-sm">
           <div className="text-[10px] text-[#8B1A1A] font-bold mb-1 flex items-center gap-2">
-            <span className="text-base">🤖</span> 사주 한줄 요약
+            <span className="text-base">🤖</span> 하늘이 내린 전언
           </div>
           <div className="text-[13px] text-[#3D1F0A] italic leading-relaxed min-h-[30px] flex items-center font-medium">
             {loadingAi ? (
@@ -68,7 +68,8 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
         </div>
 
         {/* 사주 팔자 */}
-        <div className="text-[10px] text-[#8B6914] font-bold mb-1 uppercase tracking-wider">사주 팔자 (四柱八字)</div>
+        <div className="text-[10px] text-[#8B6914] font-bold mb-0.5 uppercase tracking-wider">사주 팔자 (四柱八字)</div>
+        <p className="text-[9px] text-[#A09060] italic mb-1">* 년·월·일·시주는 태어난 연도·달·날짜·시간을 의미합니다.</p>
         <div className="grid grid-cols-4 gap-1.5 mb-3">
           {(['year', 'month', 'day', 'hour'] as const).map((k, i) => {
             const pillar = s[k] as SajuPillar;

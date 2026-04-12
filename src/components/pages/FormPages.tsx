@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { UserData } from '../../types';
 import { calculateSaju } from '../../constants';
 
@@ -16,11 +17,20 @@ const HOUR_OPTIONS = [
   { label: '해시 (亥時) 21:30~23:30',value: '21' },
 ];
 
-const inputCls = 'w-full p-2 border-2 border-[#C8A14B]/40 rounded-lg bg-white/60 text-[13px] focus:outline-none focus:border-[#8B1A1A] transition-colors';
 const labelCls = 'text-[10px] text-[#8B6914] font-bold uppercase tracking-widest mb-1 block';
+
+const inputBase = 'w-full p-2 border-2 rounded-lg bg-white/60 text-[13px] focus:outline-none transition-colors';
+const inputNormal = `${inputBase} border-[#C8A14B]/40 focus:border-[#8B1A1A]`;
+const inputError  = `${inputBase} border-red-500 focus:border-red-600`;
 
 export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, onNext }: any) => {
   const { name, date, hour, subjects } = draftMyData;
+  const [touched, setTouched] = useState(false);
+
+  const nameMissing    = !name.trim();
+  const dateMissing    = !date;
+  const subjectMissing = !subjects.some((s: string) => s.trim());
+  const hasError = nameMissing || dateMissing || subjectMissing;
 
   const update = (key: string, val: any) => setDraftMyData({ ...draftMyData, [key]: val });
   const updateSubject = (idx: number, val: string) => {
@@ -28,7 +38,7 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
   };
 
   const handleSubmit = () => {
-    if (!name || !date) { alert('이름과 생년월일을 입력해주세요!'); return; }
+    if (hasError) { setTouched(true); return; }
     const userData: UserData = {
       name, date, hour,
       subjects: subjects.filter((s: string) => s.trim()),
@@ -46,22 +56,46 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
           내 정보 입력 (我의 八字)
         </div>
 
+        {/* 유효성 안내 메시지 */}
+        {touched && hasError && (
+          <div className="bg-[#8B1A1A]/10 border-2 border-[#8B1A1A]/30 rounded-xl px-3 py-2.5 -mt-1 shadow-sm">
+            <p className="text-[13px] text-[#8B1A1A] italic text-center mb-1.5">
+              당신의 기운과 과목이 만날 수 있도록 정보를 들려주세요.
+            </p>
+            <ul className="text-[11px] text-[#8B1A1A] font-bold space-y-0.5 text-center">
+              {nameMissing    && <li>· 이름 (名) 미입력</li>}
+              {dateMissing    && <li>· 생년월일 (生年月日) 미입력</li>}
+              {subjectMissing && <li>· 시험 과목 (科目) 최소 1개 이상 필요</li>}
+            </ul>
+          </div>
+        )}
+
         <div>
           <label className={labelCls}>이름 (名)</label>
-          <input type="text" value={name} onChange={e => update('name', e.target.value)}
-            placeholder="이름을 입력하세요" className={inputCls} />
+          <input
+            type="text"
+            value={name}
+            onChange={e => update('name', e.target.value)}
+            placeholder="이름을 입력하세요"
+            className={touched && nameMissing ? inputError : inputNormal}
+          />
         </div>
 
         <div>
           <label className={labelCls}>생년월일 (生年月日)</label>
-          <input type="date" value={date} onChange={e => update('date', e.target.value)} className={inputCls} />
+          <input
+            type="date"
+            value={date}
+            onChange={e => update('date', e.target.value)}
+            className={touched && dateMissing ? inputError : inputNormal}
+          />
         </div>
 
         <div>
           <label className={labelCls}>
             태어난 시간 (時) <span className="text-[#A09060] normal-case tracking-normal">(선택)</span>
           </label>
-          <select value={hour} onChange={e => update('hour', e.target.value)} className={inputCls}>
+          <select value={hour} onChange={e => update('hour', e.target.value)} className={inputNormal}>
             <option value="">모름</option>
             {HOUR_OPTIONS.map(({ label, value }) => (
               <option key={value} value={value}>{label}</option>
@@ -80,7 +114,7 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
               <div key={i} className="flex gap-1.5">
                 <input type="text" value={s} onChange={e => updateSubject(i, e.target.value)}
                   placeholder={`과목 ${i + 1}`}
-                  className="flex-1 p-2 border-2 border-[#C8A14B]/40 rounded-lg bg-white/60 text-[12px] focus:outline-none focus:border-[#8B1A1A] transition-colors" />
+                  className={`flex-1 p-2 border-2 rounded-lg bg-white/60 text-[12px] focus:outline-none transition-colors ${touched && subjectMissing && !s.trim() ? 'border-red-500 focus:border-red-600' : 'border-[#C8A14B]/40 focus:border-[#8B1A1A]'}`} />
                 {subjects.length > 1 && (
                   <button onClick={() => update('subjects', subjects.filter((_: any, j: number) => j !== i))}
                     className="px-2 text-[#8B1A1A] hover:bg-[#8B1A1A]/10 rounded-lg transition-colors text-[12px]">✕</button>
@@ -90,7 +124,8 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, setAiFortune, o
           </div>
         </div>
 
-        <button onClick={handleSubmit}
+        <button
+          onClick={handleSubmit}
           className="w-full p-3 bg-[#8B1A1A] text-[#FFD700] rounded-xl font-bold text-[14px] tracking-widest hover:bg-[#6B0A0A] transition-all shadow-md active:scale-95 mt-1">
           ✦ 사주 분석 시작 ✦
         </button>
