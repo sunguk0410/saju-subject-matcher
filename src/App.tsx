@@ -5,6 +5,9 @@ import Book from './components/Book';
 import Landing from './components/Landing';
 import { fetchAiFortune } from './lib/utils';
 
+const getFortuneKey = (data: UserData) =>
+  `${data.name}|${data.date}|${data.hour}|${data.subjects.join(',')}`;
+
 export default function App() {
   const [myData, setMyData] = useState<UserData | null>(() => {
     const saved = localStorage.getItem('myData');
@@ -14,8 +17,17 @@ export default function App() {
     const saved = localStorage.getItem('draftMyData');
     return saved ? JSON.parse(saved) : { name: '', date: '', hour: '', subjects: [''] };
   });
+  // 저장된 운세가 현재 myData와 동일한 경우에만 복원
   const [aiFortune, setAiFortune] = useState<string>(() => {
-    return localStorage.getItem('aiFortune') || '';
+    const savedKey = localStorage.getItem('aiFortune_key');
+    const savedMyData = localStorage.getItem('myData');
+    if (savedKey && savedMyData) {
+      const data = JSON.parse(savedMyData) as UserData;
+      if (getFortuneKey(data) === savedKey) {
+        return localStorage.getItem('aiFortune') || '';
+      }
+    }
+    return '';
   });
   const [loadingAi, setLoadingAi] = useState(false);
   const [isBookOpen, setIsBookOpen] = useState(false);
@@ -23,14 +35,17 @@ export default function App() {
   const fetchGenRef = useRef(0);
   const isInitialRender = useRef(true);
 
-  // 폼 제출로 myData가 새로 바뀔 때만 fetch (마운트 시 localStorage 복원은 제외, 이미 결과 있으면 스킵)
+  // 폼 제출로 myData가 바뀔 때마다 새로 fetch (초기 마운트 제외)
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;
     }
     if (!myData) return;
-    if (aiFortune) return;
+    // 새 데이터 제출 → 이전 운세 초기화 후 재요청
+    setAiFortune('');
+    localStorage.removeItem('aiFortune');
+    localStorage.removeItem('aiFortune_key');
     const gen = ++fetchGenRef.current;
     setLoadingAi(true);
     fetchAiFortune(myData).then(fortune => {
@@ -47,9 +62,14 @@ export default function App() {
   }, [myData, draftMyData]);
 
   useEffect(() => {
-    if (aiFortune && !aiFortune.includes('잠들었습니다')) localStorage.setItem('aiFortune', aiFortune);
-    else if (!aiFortune) localStorage.removeItem('aiFortune');
-  }, [aiFortune]);
+    if (aiFortune && !aiFortune.includes('잠들었습니다') && myData) {
+      localStorage.setItem('aiFortune', aiFortune);
+      localStorage.setItem('aiFortune_key', getFortuneKey(myData));
+    } else if (!aiFortune) {
+      localStorage.removeItem('aiFortune');
+      localStorage.removeItem('aiFortune_key');
+    }
+  }, [aiFortune, myData]);
 
   return (
     <div className="min-h-screen bg-[#1A0F05] flex items-center justify-center p-4 relative overflow-hidden">
