@@ -230,7 +230,8 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
           <div className="text-[10px] text-[#8B6914] font-bold mb-1 flex items-center gap-2">
             <span className="text-base">✦</span> 하늘이 내린 전언
           </div>
-          <div className="text-[13px] text-[#3D1F0A] italic leading-relaxed min-h-[30px] flex items-center font-medium">
+          <div className="text-[12px] text-[#3D1F0A] italic leading-relaxed font-medium"
+            style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all', minHeight: 30 }}>
             {loadingAi ? (
               <div className="flex items-center gap-2">
                 <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -238,7 +239,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
                 <span className="text-[11px]">천기의 흐름을 읽는 중...</span>
               </div>
             ) : (
-              <span>{aiFortune || '분석 결과가 없습니다.'}</span>
+              aiFortune || '분석 결과가 없습니다.'
             )}
           </div>
         </div>
@@ -393,7 +394,8 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
                   <div className="h-full rounded-full transition-all duration-1000"
                     style={{ width: `${score}%`, backgroundColor: elementColor }} />
                 </div>
-                <div className="text-[10px] text-[#5C3010] italic leading-tight min-h-[14px]">
+                <div className="text-[10px] text-[#5C3010] italic leading-snug"
+                  style={{ wordBreak: 'keep-all', minHeight: 14 }}>
                   {isLoading ? (
                     <span className="flex items-center gap-1">
                       <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="inline-block">🌀</motion.span>

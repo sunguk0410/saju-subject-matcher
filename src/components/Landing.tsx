@@ -66,30 +66,16 @@ export default function Landing({ onOpen }: LandingProps) {
           pointerEvents: 'none',
         }}>
 
-          {/* 상단 소제목 */}
+          {/* 상단 타이틀 그룹 — 책 표지처럼 위쪽 배치 */}
           <div style={{
-            fontSize: 8.5,
-            color: 'rgba(255,245,215,0.62)',
-            letterSpacing: '0.22em',
-            fontFamily: 'serif',
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-          }}>
-            ♦ 과목 궁합 매칭 시스템 ♦
-          </div>
-
-          {/* 중앙 타이틀 그룹 — 여백으로 중간 위쪽 배치 */}
-          <div style={{
-            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-            marginTop: -10,   // 약간 위로 올려 중앙-상단 느낌
+            gap: 5,
+            marginTop: 4,
           }}>
             <div style={{
-              fontSize: 48,
+              fontSize: 36,
               fontWeight: 700,
               fontFamily: 'serif',
               color: 'rgba(255,248,225,0.97)',
@@ -101,15 +87,31 @@ export default function Landing({ onOpen }: LandingProps) {
               八字大學
             </div>
             <div style={{
-              fontSize: 12,
+              fontSize: 10,
               fontFamily: 'serif',
               color: 'rgba(255,245,215,0.58)',
-              letterSpacing: '0.5em',
+              letterSpacing: '0.45em',
               whiteSpace: 'nowrap',
             }}>
               팔 자 대 학
             </div>
           </div>
+
+          {/* 소제목 */}
+          <div style={{
+            fontSize: 8,
+            color: 'rgba(255,245,215,0.45)',
+            letterSpacing: '0.18em',
+            fontFamily: 'serif',
+            textAlign: 'center',
+            whiteSpace: 'nowrap',
+            marginTop: 8,
+          }}>
+            ♦ 과목 궁합 매칭 시스템 ♦
+          </div>
+
+          {/* 중앙 여백 */}
+          <div style={{ flex: 1 }} />
 
           {/* 하단 문구 */}
           <div style={{
