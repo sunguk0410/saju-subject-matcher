@@ -78,7 +78,7 @@ export default function Landing({ onOpen }: LandingProps) {
               fontSize: 36,
               fontWeight: 700,
               fontFamily: 'serif',
-              color: 'rgba(255,248,225,0.97)',
+              color: 'rgba(255,245,215,0.58)',
               letterSpacing: '0.06em',
               lineHeight: 1,
               whiteSpace: 'nowrap',
