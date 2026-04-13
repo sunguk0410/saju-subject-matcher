@@ -55,8 +55,8 @@ export const SharePage = ({ myData }: any) => {
             </div>
             <div className="space-y-2">
               {[
-                { label: '유혹의 제목 (誘惑之言)', items: CLICKBAIT_TITLES, val: clickbaitIdx, set: setClickbaitIdx },
-                { label: '저주의 내용 (詛呪之辭)', items: DISTRACTION_CURSES, val: curseIdx, set: setCurseIdx },
+                { label: '낚시 제목', items: CLICKBAIT_TITLES, val: clickbaitIdx, set: setClickbaitIdx },
+                { label: '저주 내용', items: DISTRACTION_CURSES, val: curseIdx, set: setCurseIdx },
               ].map(({ label, items, val, set }) => (
                 <div key={label}>
                   <div className="text-[9px] text-[#8B6914] mb-1 font-bold">{label}</div>
