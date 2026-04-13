@@ -53,6 +53,14 @@ const mobileVariants = {
   }),
 };
 
+const pageTurnSfx = new Audio('/page-turn.mp3');
+pageTurnSfx.volume = 0.6;
+
+function playPageTurn() {
+  pageTurnSfx.currentTime = 0;
+  pageTurnSfx.play().catch(() => {});
+}
+
 export default function Book({ myData, setMyData, draftMyData, setDraftMyData, aiFortune, setAiFortune, loadingAi, onClose }: BookProps) {
   // ── 데스크톱 상태 ────────────────────────────────────────────
   const [cur, setCur] = useState(0);               // 내비게이션 현재 위치
@@ -109,6 +117,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
   const handleNext = () => {
     if (isMobile) {
       if (mobilePage < ALL_PAGES.length - 1 && !mobileAnim) {
+        playPageTurn();
         setMobileDir('next');
         setMobileAnim(true);
         setMobilePage(p => p + 1);
@@ -117,6 +126,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
       return;
     }
     if (cur < SPREADS.length - 1 && !isFlipping) {
+      playPageTurn();
       const fromIdx = cur;
       const toIdx = cur + 1;
       setCur(toIdx);
@@ -132,6 +142,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
   const handlePrev = () => {
     if (isMobile) {
       if (mobilePage > 0 && !mobileAnim) {
+        playPageTurn();
         setMobileDir('prev');
         setMobileAnim(true);
         setMobilePage(p => p - 1);
@@ -140,6 +151,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
       return;
     }
     if (cur > 0 && !isFlipping) {
+      playPageTurn();
       const fromIdx = cur;
       const toIdx = cur - 1;
       setCur(toIdx);

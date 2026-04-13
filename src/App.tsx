@@ -5,10 +5,45 @@ import Book from './components/Book';
 import Landing from './components/Landing';
 import { fetchAiFortune } from './lib/utils';
 
+function useBgm() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [muted, setMuted] = useState(false);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const audio = new Audio('/bgm.mp3');
+    audio.loop = true;
+    audio.volume = 0.35;
+    audioRef.current = audio;
+
+    const start = () => {
+      if (!started.current) {
+        started.current = true;
+        audio.play().catch(() => {});
+      }
+    };
+    document.addEventListener('click', start, { once: true });
+    return () => {
+      document.removeEventListener('click', start);
+      audio.pause();
+    };
+  }, []);
+
+  const toggleMute = () => {
+    if (!audioRef.current) return;
+    const next = !muted;
+    audioRef.current.muted = next;
+    setMuted(next);
+  };
+
+  return { muted, toggleMute };
+}
+
 const getFortuneKey = (data: UserData) =>
   `${data.name}|${data.date}|${data.hour}|${data.subjects.join(',')}`;
 
 export default function App() {
+  const { muted, toggleMute } = useBgm();
   const [myData, setMyData] = useState<UserData | null>(() => {
     const saved = localStorage.getItem('myData');
     return saved ? JSON.parse(saved) : null;
@@ -84,6 +119,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#1A0F05] flex items-center justify-center p-4 relative overflow-hidden">
+      <button
+        onClick={toggleMute}
+        className="fixed top-3 right-3 z-50 text-[#C8A14B]/60 hover:text-[#C8A14B] text-lg transition-colors"
+        title={muted ? '음악 켜기' : '음악 끄기'}
+      >
+        {muted ? '🔇' : '🔊'}
+      </button>
       <div className="absolute inset-0 pointer-events-none z-0 opacity-10"
            style={{
              background: `repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,200,80,0.1) 3px, rgba(255,200,80,0.1) 4px),
