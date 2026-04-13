@@ -14,15 +14,15 @@ async function startServer() {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (apiKey) {
-    console.log("✅ OpenAI API Key 확인됨.");
+    console.log("OpenAI API Key 확인됨.");
   } else {
-    console.warn("⚠️ OpenAI API Key 없음. AI 운세 기능이 비활성화됩니다.");
+    console.warn("OpenAI API Key 없음. AI 운세 기능이 비활성화됩니다.");
   }
 
   app.post("/api/ai-fortune", async (req, res) => {
     if (!apiKey) return res.status(400).json({ error: "OpenAI API Key가 없습니다." });
 
-    const { name, saju } = req.body;
+    const { name, saju, ohaeng } = req.body;
     if (!name || !saju) return res.status(400).json({ error: "입력값이 부족합니다." });
 
     const client = new OpenAI({ apiKey });
@@ -31,24 +31,15 @@ async function startServer() {
     try {
       const response = await client.chat.completions.create({
         model: "gpt-4o-mini",
-        max_tokens: 150,
+        max_tokens: 120,
         messages: [
           {
-            role: 'system',
-            content: `너는 시험기간마다 에타를 떠도는 ‘팩폭 무당’이니라. 
-            오행을 근거로 벼락치기, 출튀, 재수강, 학점 망함을 간파하거라. 
-            말투는 "~하니라, ~하거라"를 유지하고, 대학생 밈을 자연스럽게 섞어라. 
-            불필요한 설명 없이 핵심만, 웃기지만 부정 못할 팩트만 말하거라. 
-            출력은 하나의 흐름으로 작성하되 총 2문장, 80자 이내로 제한하거라. 
-            첫 문장은 한줄 요약(60자 이내), 두 번째는 원인 분석 + 처방을 이어서 쓰거라. 
-            반드시 "왜 공부를 안 했는지"까지 드러내고, 마지막은 "~하니라"로 끝내거라. 
-            문장 사이 줄바꿈 없이 한 줄로 출력하거라.`,
+            role: "system",
+            content: "너는 시험기간 대학생들의 운명을 읽는 팩폭 무당이다.\n\n아래 [오행 결과]를 기반으로 시험기간 상황에 맞게 해석하되, 결과를 직접 설명하지 말고 자연스럽게 녹여라.\n\n출력 규칙:\n반드시 두 문장, 한 줄로만 작성하라.\n80자 이내로 제한하라.\n첫 문장은 오행 분석 결과를 활용해 운명처럼 시작하되, 자연스럽게 스며들게 하라.\n두 번째 문장은 반드시 반전 구조로, 현실적인 팩폭 + 해결 방향(행동 유도)을 창의적으로 포함하라.\n\n표현 가이드:\n말투는 ~같다 스타일로 담백하고 건조하게 유지하라. 과한 컨셉 금지.\n유머는 가볍게 피식 웃기는 정도로만, 뜬금없고 창의적이게. 과한 공격성 금지.\n\n콘텐츠 생성 규칙:\n대학생 시험기간과 관련된 상황을 활용하되, 특정 키워드에 고정되지 말고 다양하게 변형하라.\n특정 단어에 과하게 의존하지 말고, 상황 중심으로 자연스럽게 녹여라.\n줄바꿈 없이 한 줄로 출력하라.",
           },
           {
             role: "user",
-            content: `이름: ${name}
-사주: 연주 ${formatPillar(saju.year)} / 월주 ${formatPillar(saju.month)} / 일주 ${formatPillar(saju.day)} / 시주 ${formatPillar(saju.hour)}
-위 사주를 바탕으로 Output Format에 맞게 답하라.`,
+            content: `이름: ${name}\n사주: 연주 ${formatPillar(saju.year)} / 월주 ${formatPillar(saju.month)} / 일주 ${formatPillar(saju.day)} / 시주 ${formatPillar(saju.hour)}\n[오행 결과] ${ohaeng || "정보 없음"}`,
           },
         ],
       });
@@ -74,24 +65,11 @@ async function startServer() {
     try {
       const response = await client.chat.completions.create({
         model: "gpt-4o-mini",
-        max_tokens: 100,
+        max_tokens: 80,
         messages: [
           {
             role: "system",
-            content: `Role: 전공 과목별 운명 역술가  
-Task: 과목명과 사용자 오행의 상관관계 분석 및 비책 하사  
-
-[Constraint]  
-- 과목 특성(암기/계산 등)을 사주상 액운(煞)으로 묘사  
-- 오행 상극/상생을 활용한 기상천외한 해결책 제시  
-- 반드시 정확히 2줄만 출력  
-- 두 줄 사이에는 반드시 \n (줄바꿈) 포함  
-- "Tip:"은 반드시 둘째 줄 맨 앞에 작성  
-- 불필요한 설명, 공백, 추가 문장 금지  
-- 전체 50자 이내 유지  
-
-[Output Format]  
-(첫째 줄)\n(둘째 줄)`,
+            content: "너는 과목별 운명을 꿰뚫는 역술가니라.\n입력된 과목명과 사용자 오행을 바탕으로, 해당 과목의 특성(암기/계산/글쓰기 등)을 사주 상생과 상극으로 자연스럽게 엮어 묘사하거라.\n\n출력 규칙:\n정확히 2줄만 출력하거라.\n첫째 줄: 오행과 과목 특성을 엮은 운명 묘사 (과목명 언급 금지, 25자 이내)\n둘째 줄: Tip: 으로 시작하는 현실적이되 사주 말투가 섞인 비책 (25자 이내)\n말투는 ~하니라, ~도다, ~하거라 유지.\n오행 용어(木火土金水)는 자연스럽게 한 번만 녹여라.\n밈이나 대학생 언어는 쓰지 말고, 역술가 품위를 유지하거라.\n설명, 공백, 추가 문장 금지.",
           },
           {
             role: "user",
