@@ -4,9 +4,9 @@ import { getFiveElements, getSajuValue, pick, OHF, OHK, BYEONGMAT_COMMENTS } fro
 export const fetchAiFortune = async (userData: UserData): Promise<string> => {
   try {
     const elements = getFiveElements(userData.saju);
+    const total = Object.values(elements).reduce((a, b) => a + b, 0) || 1;
     const ohaeng = (['목', '화', '토', '금', '수'] as const)
-      .filter(k => elements[k] > 0)
-      .map(k => `${k} ${elements[k]}`)
+      .map(k => `${k} ${elements[k]}개(${Math.round((elements[k] / total) * 100)}%)`)
       .join(' / ');
 
     const response = await fetch('/api/ai-fortune', {
