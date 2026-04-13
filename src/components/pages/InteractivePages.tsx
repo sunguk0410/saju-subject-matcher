@@ -16,7 +16,7 @@ export const SharePage = ({ myData }: any) => {
       ? `[슝슝이 사주] 내 중간고사 운빨은? 지금 확인해보세요! 슝슝! ${window.location.href}`
       : `${CLICKBAIT_TITLES[clickbaitIdx]}\n\n${DISTRACTION_CURSES[curseIdx]}\n\n내 사주 보러가기: ${window.location.href}`;
     navigator.clipboard.writeText(text).then(() => {
-      alert(mode === 'normal' ? '복사! 친구도 딴짓하게 만드세요 😈' : '저주가 담긴 낚시 링크가 복사되었습니다! 🎣');
+      alert(mode === 'normal' ? '복사되었느니라. 벗도 이 운명을 마주하게 하라.' : '저주의 서신이 봉인되었느니라. 이제 전달하거라.');
     });
   };
 
@@ -33,30 +33,30 @@ export const SharePage = ({ myData }: any) => {
         </div>
 
         <div className="bg-[#C8A14B]/10 border border-[#C8A14B]/20 rounded-xl p-3.5 mb-3 shadow-md">
-          <div className="text-[12px] text-[#8B6914] font-bold mb-2 flex items-center gap-2">
-            <span>📚</span> 시험공부 팁
+          <div className="text-[12px] text-[#8B6914] font-bold mb-2">
+            ✦ 시험공부 전략지 (試驗攻略)
           </div>
           <ul className="text-[12px] text-[#3D1F0A] space-y-1.5 list-disc pl-4 font-medium">
             {tips.map(([before, highlight, after], i) => (
               <li key={i}>{before} <span className="text-[#8B1A1A]">{highlight}</span>{after}</li>
             ))}
           </ul>
-          <p className="text-[10px] text-[#A09060] mt-2 text-right">* 이 가이드는 과학적 근거가 전혀 없습니다.</p>
+          <p className="text-[10px] text-[#A09060] mt-2 text-right">* 본 전략지는 오행의 이치에 의거하였으니 과학적 근거는 논하지 말지어다.</p>
         </div>
 
         <div className="bg-[#8B1A1A]/5 border border-[#8B1A1A]/15 rounded-xl p-3.5 mb-3 shadow-md">
-          <div className="text-[12px] text-[#8B1A1A] font-bold mb-2 flex items-center gap-2">
-            <span>😈</span> 딴짓 저주
+          <div className="text-[12px] text-[#8B1A1A] font-bold mb-2">
+            ✦ 딴짓 저주 (雜念詛呪)
           </div>
           <div className="space-y-2.5">
             <div className="text-[12px] text-[#5C1608] leading-relaxed">
-              친구에게 낚시 링크를 보내 공부를 방해하시오.<br />
-              상대방의 집중력을 뺏어오는 것이 최고의 전략이오.
+              벗에게 이 서신을 보내어 그의 공부를 흐트러뜨려라.<br />
+              적의 집중 기운을 흩트리는 것이 상책이니라.
             </div>
             <div className="space-y-2">
               {[
-                { label: '낚시 제목', items: CLICKBAIT_TITLES, val: clickbaitIdx, set: setClickbaitIdx },
-                { label: '저주 내용', items: DISTRACTION_CURSES, val: curseIdx, set: setCurseIdx },
+                { label: '유혹의 제목 (誘惑之言)', items: CLICKBAIT_TITLES, val: clickbaitIdx, set: setClickbaitIdx },
+                { label: '저주의 내용 (詛呪之辭)', items: DISTRACTION_CURSES, val: curseIdx, set: setCurseIdx },
               ].map(({ label, items, val, set }) => (
                 <div key={label}>
                   <div className="text-[9px] text-[#8B6914] mb-1 font-bold">{label}</div>
@@ -69,12 +69,12 @@ export const SharePage = ({ myData }: any) => {
             </div>
             <button onClick={() => handleCopy('curse')}
               className="w-full p-2.5 bg-[#8B1A1A] text-[#FFD700] rounded-lg text-[13px] font-bold hover:bg-[#6B0A0A] transition-all shadow-md active:scale-95">
-              🎣 낚시 저주 링크 복사
+              저주의 서신 전달하기
             </button>
           </div>
         </div>
         <div className="text-[11px] text-[#5C1608] opacity-70 text-center font-medium">
-          ※ 낚시 성공 시 당신의 학점 운이 0.1% 상승할지도 모릅니다.
+          ※ 저주가 성공하면 그대의 학점 기운이 소폭 상승하리니.
         </div>
       </div>
     </div>
