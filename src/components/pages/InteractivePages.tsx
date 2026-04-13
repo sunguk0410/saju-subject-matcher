@@ -23,28 +23,33 @@ export const SharePage = ({ myData }: any) => {
   return (
     <div className="w-full h-full page-bg">
       <div className="pt-4 px-4 h-full flex flex-col pr-1">
-        <div className="font-serif text-[16px] font-bold text-[#3D1F0A] text-center mb-4 pb-2 border-b-2 border-[#C8A14B]/50 relative after:content-['✦'] after:absolute after:-bottom-2.5 after:left-1/2 after:-translate-x-1/2 after:text-[12px] after:text-[#C8A14B] after:bg-[#FAF3DC] after:px-1">
+        <div className="font-serif text-[16px] font-bold text-[#3D1F0A] text-center mb-2">
           마무리 및 공유 (共有)
         </div>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#C8A14B]/50" />
+          <span className="text-[#C8A14B] text-[11px]">✦</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#C8A14B]/50" />
+        </div>
 
-        <div className="bg-[#C8A14B]/10 border-2 border-[#C8A14B]/30 rounded-xl p-3.5 mb-3 shadow-sm">
+        <div className="bg-[#C8A14B]/10 border border-[#C8A14B]/20 rounded-xl p-3.5 mb-3 shadow-md">
           <div className="text-[12px] text-[#8B6914] font-bold mb-2 flex items-center gap-2">
             <span>📚</span> 시험공부 팁
           </div>
-          <ul className="text-[11px] text-[#3D1F0A] space-y-1.5 list-disc pl-4 font-medium">
+          <ul className="text-[12px] text-[#3D1F0A] space-y-1.5 list-disc pl-4 font-medium">
             {tips.map(([before, highlight, after], i) => (
               <li key={i}>{before} <span className="text-[#8B1A1A]">{highlight}</span>{after}</li>
             ))}
           </ul>
-          <p className="text-[9px] text-[#A09060] italic mt-2 text-right">* 이 가이드는 과학적 근거가 전혀 없습니다.</p>
+          <p className="text-[10px] text-[#A09060] mt-2 text-right">* 이 가이드는 과학적 근거가 전혀 없습니다.</p>
         </div>
 
-        <div className="bg-[#8B1A1A]/5 border-2 border-[#8B1A1A]/30 rounded-xl p-3.5 mb-3 shadow-sm">
+        <div className="bg-[#8B1A1A]/5 border border-[#8B1A1A]/15 rounded-xl p-3.5 mb-3 shadow-md">
           <div className="text-[12px] text-[#8B1A1A] font-bold mb-2 flex items-center gap-2">
             <span>😈</span> 딴짓 저주
           </div>
           <div className="space-y-2.5">
-            <div className="text-[10px] text-[#5C1608] leading-relaxed">
+            <div className="text-[12px] text-[#5C1608] leading-relaxed">
               친구에게 낚시 링크를 보내 공부를 방해하시오.<br />
               상대방의 집중력을 뺏어오는 것이 최고의 전략이오.
             </div>
@@ -56,7 +61,7 @@ export const SharePage = ({ myData }: any) => {
                 <div key={label}>
                   <div className="text-[9px] text-[#8B6914] mb-1 font-bold">{label}</div>
                   <select value={val} onChange={e => set(parseInt(e.target.value))}
-                    className="w-full p-1.5 border-2 border-[#C8A860] rounded-lg bg-[#FFFBF0] text-[13px] text-[#3D1F0A] focus:outline-none focus:border-[#8B1A1A]">
+                    className="w-full p-1.5 border border-[#C8A860]/50 rounded-lg bg-[#FFFBF0] text-[13px] text-[#3D1F0A] focus:outline-none focus:border-[#8B1A1A] shadow-sm">
                     {items.map((t, i) => <option key={i} value={i}>{t}</option>)}
                   </select>
                 </div>
@@ -68,7 +73,7 @@ export const SharePage = ({ myData }: any) => {
             </button>
           </div>
         </div>
-        <div className="text-[10px] text-[#5C1608] italic opacity-70 text-center font-medium">
+        <div className="text-[11px] text-[#5C1608] opacity-70 text-center font-medium">
           ※ 낚시 성공 시 당신의 학점 운이 0.1% 상승할지도 모릅니다.
         </div>
       </div>

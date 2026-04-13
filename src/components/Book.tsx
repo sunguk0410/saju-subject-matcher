@@ -233,7 +233,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
         ✕
       </button>
 
-      <div className="w-full bg-[#2D1B0E] rounded-2xl p-4 border-4 border-[#5C3010] shadow-[0_25px_60px_rgba(0,0,0,0.9)]">
+      <div className="w-full bg-[#2D1B0E] rounded-2xl p-4 border border-[#5C3010]/80 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_0_3px_rgba(92,48,16,0.4)]">
         {/* 책 본체 */}
         <div
           className="relative w-full bg-[#FAF3DC] rounded-xl overflow-hidden flex shadow-inner"

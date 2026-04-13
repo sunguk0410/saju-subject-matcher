@@ -15,20 +15,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const response = await client.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 80,
+      max_tokens: 100,
       messages: [
         {
           role: 'system',
-          content: `Role: 전공 과목별 운명 역술가
-Task: 과목명과 사용자 오행의 상관관계 분석 및 비책 하사
+          content: `Role: 전공 과목별 운명 역술가  
+Task: 과목명과 사용자 오행의 상관관계 분석 및 비책 하사  
 
-[Constraint]
-- 과목 특성(암기/계산 등)을 사주상 액운(煞)으로 묘사.
-- 오행 상극/상생을 활용한 기상천외한 해결책 제시.
-- 반드시 한 줄로만 출력하며, 50자를 넘지 말 것.
+[Constraint]  
+- 과목 특성(암기/계산 등)을 사주상 액운(煞)으로 묘사  
+- 오행 상극/상생을 활용한 기상천외한 해결책 제시  
+- 반드시 정확히 2줄만 출력  
+- 두 줄 사이에는 반드시 \n (줄바꿈) 포함  
+- "Tip:"은 반드시 둘째 줄 맨 앞에 작성  
+- 불필요한 설명, 공백, 추가 문장 금지  
+- 전체 50자 이내 유지  
 
-[Output Format]
-[병맛 해결책 한 줄]`,
+[Output Format]  
+(첫째 줄)\n(둘째 줄)`,
         },
         {
           role: 'user',

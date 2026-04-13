@@ -35,14 +35,25 @@ export default function App() {
   const fetchGenRef = useRef(0);
   const isInitialRender = useRef(true);
 
-  // 폼 제출로 myData가 바뀔 때마다 새로 fetch (초기 마운트 제외)
+  // 폼 제출로 myData가 바뀔 때마다 fetch — 동일 데이터면 캐시 재사용
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;
     }
     if (!myData) return;
-    // 새 데이터 제출 → 이전 운세 초기화 후 재요청
+
+    const key = getFortuneKey(myData);
+    const cachedKey    = localStorage.getItem('aiFortune_key');
+    const cachedFortune = localStorage.getItem('aiFortune');
+
+    // 동일한 데이터: 기존 운세 재사용, API 재호출 없음
+    if (cachedKey === key && cachedFortune) {
+      setAiFortune(cachedFortune);
+      return;
+    }
+
+    // 새 데이터 → 초기화 후 재요청
     setAiFortune('');
     localStorage.removeItem('aiFortune');
     localStorage.removeItem('aiFortune_key');

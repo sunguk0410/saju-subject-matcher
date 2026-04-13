@@ -19,9 +19,9 @@ const HOUR_OPTIONS = [
 
 const labelCls = 'text-[10px] text-[#8B6914] font-bold uppercase tracking-widest mb-1 block';
 
-const inputBase = 'w-full p-2 border-2 rounded-lg bg-white/60 text-[13px] focus:outline-none transition-colors';
-const inputNormal = `${inputBase} border-[#C8A14B]/40 focus:border-[#8B1A1A]`;
-const inputError  = `${inputBase} border-red-500 focus:border-red-600`;
+const inputBase = 'w-full p-2 border rounded-lg bg-white/60 text-[13px] focus:outline-none transition-colors shadow-sm';
+const inputNormal = `${inputBase} border-[#C8A14B]/30 focus:border-[#8B1A1A] focus:shadow-md`;
+const inputError  = `${inputBase} border-red-400 focus:border-red-500 shadow-[0_0_0_2px_rgba(239,68,68,0.15)]`;
 
 export const MyForm = ({ draftMyData, setDraftMyData, setMyData, onNext }: any) => {
   const { name, date, hour, subjects } = draftMyData;
@@ -51,13 +51,18 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, onNext }: any) 
   return (
     <div className="w-full h-full page-bg">
       <div className="pt-4 px-4 pb-4 flex flex-col gap-3">
-        <div className="font-serif text-[16px] font-bold text-[#3D1F0A] text-center mb-1 pb-2 border-b-2 border-[#C8A14B]/50 relative after:content-['✦'] after:absolute after:-bottom-2.5 after:left-1/2 after:-translate-x-1/2 after:text-[12px] after:text-[#C8A14B] after:bg-[#F5EDD0] after:px-1">
+        <div className="font-serif text-[16px] font-bold text-[#3D1F0A] text-center mb-2">
           내 정보 입력 (我의 八字)
+        </div>
+        <div className="flex items-center gap-2 -mt-1 mb-1">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#C8A14B]/50" />
+          <span className="text-[#C8A14B] text-[11px]">✦</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#C8A14B]/50" />
         </div>
 
         {/* 유효성 안내 메시지 */}
         {touched && hasError && (
-          <div className="bg-[#8B1A1A]/10 border-2 border-[#8B1A1A]/30 rounded-xl px-3 py-2.5 -mt-1 shadow-sm">
+          <div className="bg-[#8B1A1A]/8 border border-[#8B1A1A]/20 rounded-xl px-3 py-2.5 -mt-1 shadow-md">
             <p className="text-[13px] text-[#8B1A1A] italic text-center mb-1.5">
               당신의 기운과 과목이 만날 수 있도록 정보를 들려주세요.
             </p>
@@ -113,7 +118,7 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, onNext }: any) 
               <div key={i} className="flex gap-1.5">
                 <input type="text" value={s} onChange={e => updateSubject(i, e.target.value)}
                   placeholder={`과목 ${i + 1}`}
-                  className={`flex-1 p-2 border-2 rounded-lg bg-white/60 text-[12px] focus:outline-none transition-colors ${touched && subjectMissing && !s.trim() ? 'border-red-500 focus:border-red-600' : 'border-[#C8A14B]/40 focus:border-[#8B1A1A]'}`} />
+                  className={`flex-1 p-2 border rounded-lg bg-white/60 text-[12px] focus:outline-none transition-colors shadow-sm ${touched && subjectMissing && !s.trim() ? 'border-red-400 shadow-[0_0_0_2px_rgba(239,68,68,0.15)]' : 'border-[#C8A14B]/30 focus:border-[#8B1A1A] focus:shadow-md'}`} />
                 {subjects.length > 1 && (
                   <button onClick={() => update('subjects', subjects.filter((_: any, j: number) => j !== i))}
                     className="px-2 text-[#8B1A1A] hover:bg-[#8B1A1A]/10 rounded-lg transition-colors text-[12px]">✕</button>

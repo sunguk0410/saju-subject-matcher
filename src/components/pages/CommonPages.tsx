@@ -79,10 +79,15 @@ export const FinPage = () => (
       </div>
 
       <div className="relative z-10 flex flex-col items-center w-full">
-        <div className="font-serif text-[20px] font-bold text-[#3D1F0A] text-center mb-8 pb-3 border-b-2 border-[#8B1A1A]/40 tracking-[4px] w-[80%]">
+        <div className="font-serif text-[20px] font-bold text-[#3D1F0A] text-center tracking-[4px] mb-2">
           끝맺음 (終)
         </div>
-        <div className="text-[15px] text-[#3D1F0A] leading-loose text-center mb-10 font-serif italic font-bold drop-shadow-sm px-4">
+        <div className="flex items-center gap-2 w-[80%] mb-8">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#8B1A1A]/40" />
+          <span className="text-[#8B1A1A]/60 text-[11px]">✦</span>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#8B1A1A]/40" />
+        </div>
+        <div className="text-[15px] text-[#3D1F0A] leading-loose text-center mb-10 font-serif font-bold drop-shadow-sm px-4">
           이제 사주도 봤으니<br />공부를 해야 하지 않겠느냐.<br /><br />하지만 운명이란 것은...<br />어차피 정해져 있다고 하니<br />마지막까지 최선을 다해보시오.<br /><br />— 멋사도사 —
         </div>
       </div>

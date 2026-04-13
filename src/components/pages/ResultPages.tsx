@@ -214,10 +214,10 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
   return (
     <div className="w-full h-full page-bg">
       <div className="pt-4 px-4" id="my-result-1">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex-1 text-center font-serif text-[16px] font-bold text-[#3D1F0A]">{myData.name}의 사주</div>
+        <div className="relative flex items-center justify-center mb-2">
+          <div className="font-serif text-[16px] font-bold text-[#3D1F0A]">{myData.name}의 사주</div>
           <button onClick={(e) => { e.stopPropagation(); onSave(); }}
-            className="p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
+            className="absolute right-0 p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
             💾 저장
           </button>
         </div>
@@ -226,11 +226,11 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
         </div>
 
         {/* 하늘이 내린 전언 */}
-        <div className="bg-[#C8A14B]/10 border-2 border-[#C8A14B]/30 rounded-xl p-3 mb-3 shadow-sm">
-          <div className="text-[10px] text-[#8B6914] font-bold mb-1 flex items-center gap-2">
+        <div className="bg-[#C8A14B]/10 border border-[#C8A14B]/20 rounded-xl p-3 mb-3 shadow-md">
+          <div className="text-[11px] text-[#8B6914] font-bold mb-1 flex items-center gap-2">
             <span className="text-base">✦</span> 하늘이 내린 전언
           </div>
-          <div className="text-[12px] text-[#3D1F0A] italic leading-relaxed font-medium"
+          <div className="text-[12px] text-[#3D1F0A] leading-relaxed font-medium"
             style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all', minHeight: 30 }}>
             {loadingAi ? (
               <div className="flex items-center gap-2">
@@ -245,8 +245,8 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
         </div>
 
         {/* 사주 팔자 */}
-        <div className="text-[10px] text-[#8B6914] font-bold mb-0.5 uppercase tracking-wider">사주 팔자 (四柱八字)</div>
-        <p className="text-[9px] text-[#A09060] italic mb-1.5">
+        <div className="text-[11px] text-[#8B6914] font-bold mb-0.5 uppercase tracking-wider">사주 팔자 (四柱八字)</div>
+        <p className="text-[10px] text-[#A09060] mb-1.5">
           * 년·월·일·시주는 태어난 연도·달·날짜·시간을 의미합니다. &nbsp;
           <span className="not-italic text-[#C8A14B]/70 font-bold">ⓘ</span>
           <span> 아이콘을 눌러 한자를 풀어보세요.</span>
@@ -255,7 +255,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
           {(['year', 'month', 'day', 'hour'] as const).map((k, i) => {
             const pillar = s[k] as SajuPillar;
             return (
-              <div key={k} className="text-center bg-white border-2 border-[#C8A14B]/30 rounded-lg p-1.5 shadow-sm">
+              <div key={k} className="text-center bg-white border border-[#C8A14B]/20 rounded-lg p-1.5 shadow-md">
                 <div className="flex items-start justify-center">
                   <HanjaChar char={pillar.sky} colorClass="text-[#003087]" />
                 </div>
@@ -269,8 +269,8 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
         </div>
 
         {/* 오행 분석 */}
-        <div className="text-[10px] text-[#8B6914] font-bold mb-1 uppercase tracking-wider">오행 분석 (五行分析)</div>
-        <div className="relative flex items-center justify-center bg-white/50 rounded-2xl p-2 border border-[#C8A14B]/20 mb-2">
+        <div className="text-[11px] text-[#8B6914] font-bold mb-1 uppercase tracking-wider">오행 분석 (五行分析)</div>
+        <div className="relative flex items-center justify-center bg-white/50 rounded-2xl p-2 border border-[#C8A14B]/15 mb-2 shadow-md">
           <div className="w-[220px] h-[220px]">
             <svg viewBox="-15 -30 230 260" className="w-full h-full">
               <polygon points="100,20 180,80 150,170 50,170 20,80"
@@ -302,7 +302,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
           </div>
         </div>
 
-        <div className="bg-[#8B1A1A]/5 border-l-4 border-[#8B1A1A] p-2.5 rounded-r-lg text-[11px] text-[#5C1608] italic leading-relaxed shadow-sm">
+        <div className="bg-[#8B1A1A]/5 border-l-2 border-[#8B1A1A]/60 p-2.5 rounded-r-lg text-[11px] text-[#5C1608] leading-relaxed shadow-md">
           {pick(BYEONGMAT_COMMENTS, getSajuValue(s))}
         </div>
       </div>
@@ -367,10 +367,10 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
   return (
     <div className="w-full h-full page-bg">
       <div className="pt-4 px-4 h-full flex flex-col" id="subj-compat">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex-1 text-center font-serif text-[16px] font-bold text-[#3D1F0A]">과목별 궁합 분석 (科目宮合)</div>
+        <div className="relative flex items-center justify-center mb-3">
+          <div className="font-serif text-[16px] font-bold text-[#3D1F0A]">과목별 궁합 분석 (科目宮合)</div>
           <button onClick={(e) => { e.stopPropagation(); onSave(); }}
-            className="p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
+            className="absolute right-0 p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
             💾 저장
           </button>
         </div>
@@ -382,7 +382,7 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
             const comment = aiComments[i];
             const isLoading = loadingComments && !aiComments[i];
             return (
-              <div key={i} className="bg-white/40 border border-[#C8A14B]/20 rounded-xl p-2.5 shadow-sm">
+              <div key={i} className="bg-white/40 border border-[#C8A14B]/15 rounded-xl p-2.5 shadow-md">
                 <div className="flex justify-between items-center mb-1.5">
                   <div className="flex items-center gap-2">
                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${OHC[oh]}`}>{OHK[oh]}</span>
@@ -394,7 +394,7 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
                   <div className="h-full rounded-full transition-all duration-1000"
                     style={{ width: `${score}%`, backgroundColor: elementColor }} />
                 </div>
-                <div className="text-[10px] text-[#5C3010] italic leading-snug"
+                <div className="text-[10px] text-[#5C3010] leading-snug"
                   style={{ wordBreak: 'keep-all', minHeight: 14 }}>
                   {isLoading ? (
                     <span className="flex items-center gap-1">
