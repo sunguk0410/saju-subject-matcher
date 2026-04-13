@@ -72,7 +72,7 @@ export default function Landing({ onOpen }: LandingProps) {
             flexDirection: 'column',
             alignItems: 'center',
             gap: 5,
-            marginTop: 4,
+            marginTop: 40,
           }}>
             <div style={{
               fontSize: 36,
