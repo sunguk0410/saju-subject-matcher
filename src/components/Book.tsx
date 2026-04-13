@@ -66,9 +66,18 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
   const [mobileAnim, setMobileAnim] = useState(false);
 
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
-  // 뷰포트 높이 기준 동적 책 높이: 네비(~90px) + 래퍼 패딩/보더(~48px) + 여유(~52px) = 190px 차감
-  const calcBookHeight = () => Math.min(650, Math.max(480, window.innerHeight - 190));
-  const [bookHeight, setBookHeight] = useState(calcBookHeight);
+
+  // 데스크톱: 고정 자연 크기 기준으로 zoom 스케일 계산
+  const NATURAL_W = 900;   // 책의 자연 너비 (px)
+  const NATURAL_H = 760;   // 책 본체(620) + 네비·패딩(140) 합산 자연 높이
+  const BOOK_H    = 620;   // 책 본체 고정 높이
+
+  const computeScale = () => {
+    const sw = (window.innerWidth  - 32) / NATURAL_W;
+    const sh = (window.innerHeight - 32) / NATURAL_H;
+    return Math.min(1, sw, sh);
+  };
+  const [bookScale, setBookScale] = useState(computeScale);
 
   const curRef = useRef(cur);
   const mobilePageRef = useRef(mobilePage);
@@ -77,7 +86,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
 
   useEffect(() => {
     const onResize = () => {
-      setBookHeight(calcBookHeight());
+      setBookScale(computeScale());
       const mobile = window.innerWidth < 768;
       setIsMobile(prev => {
         if (prev !== mobile) {
@@ -223,7 +232,8 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.5 }}
-      className="relative z-50 w-full max-w-[900px] flex flex-col items-center"
+      className="relative z-50 flex flex-col items-center"
+      style={{ zoom: bookScale, width: NATURAL_W }}
     >
       {/* 닫기 버튼 — 책 바깥 오른쪽 */}
       <button
@@ -237,7 +247,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
         {/* 책 본체 */}
         <div
           className="relative w-full bg-[#FAF3DC] rounded-xl overflow-hidden flex shadow-inner"
-          style={{ perspective: '2000px', height: bookHeight }}
+          style={{ perspective: '2000px', height: BOOK_H }}
         >
           {/* 중앙 제본 선 */}
           <div className="absolute left-1/2 -translate-x-1/2 w-[6px] h-full bg-gradient-to-r from-[rgba(0,0,0,0.4)] via-[rgba(200,161,75,0.1)] to-[rgba(0,0,0,0.4)] z-30 pointer-events-none" />
