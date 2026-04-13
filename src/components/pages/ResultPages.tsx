@@ -342,7 +342,7 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
                   <div className="h-full rounded-full transition-all duration-1000"
                     style={{ width: `${score}%`, backgroundColor: elementColor }} />
                 </div>
-                <div className="text-[10px] text-[#5C3010] leading-snug"
+                <div className="text-[10px] text-[#5C3010] leading-snug whitespace-pre-line"
                   style={{ wordBreak: 'keep-all', minHeight: 14 }}>
                   {isLoading ? (
                     <span className="flex items-center gap-1">

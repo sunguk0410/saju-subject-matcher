@@ -25,8 +25,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 [출력 형식]
 첫째 줄: 해당 과목의 특성(암기량, 계산, 글쓰기, 영어 등)을 오행 상극·상생으로 묘사하거라.
          과목명은 언급하지 말거라. 25자 이내. "~하니라, ~도다" 말투 유지.
-(빈 줄)
-둘째 줄: "Tip: "으로 시작하거라.
+둘째 줄: 빈줄
+셋째 줄: "Tip: "으로 시작하거라.
          오행 기운을 활용한 현실적인 대학생 공부법을 추천하거라.
          (장소, 시간대, 공부 방식, 식습관, 루틴 등 매번 다양한 요소에서 골라 추천)
          고정된 패턴 없이 매 과목마다 다른 각도로 접근하거라.
@@ -47,8 +47,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ],
     });
 
-    const comment = response.choices[0]?.message?.content?.trim();
-    if (!comment) return res.status(500).json({ error: '응답이 비어있습니다.' });
+      const raw = response.choices[0]?.message?.content?.trim();
+      if (!raw) return res.status(500).json({ error: "응답이 비어있습니다." });
+      const comment = raw.includes('Tip:')
+        ? raw.replace(/\n*(Tip:)/, '\n$1')
+        : raw;
 
     res.json({ comment });
   } catch (error: any) {
