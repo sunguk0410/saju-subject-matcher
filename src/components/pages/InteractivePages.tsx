@@ -14,7 +14,7 @@ export const SharePage = ({ myData }: any) => {
   const handleCopy = (mode: 'normal' | 'curse') => {
     const text = mode === 'normal'
       ? `[슝슝이 사주] 내 중간고사 운빨은? 지금 확인해보세요! 슝슝! ${window.location.href}`
-      : `${CLICKBAIT_TITLES[clickbaitIdx]}\n\n${DISTRACTION_CURSES[curseIdx]}\n\n내 사주 보러가기: ${window.location.href}`;
+      : `${CLICKBAIT_TITLES[clickbaitIdx]}\n\n푸하하, 어리석은 학생이여 속았구나!\n지금 당장 아래 링크를 통해 오늘의 운세를 점치지 않으면 이번 시험기간에\n${DISTRACTION_CURSES[curseIdx]}\n\n내 사주 보러가기: ${window.location.href}`;
     navigator.clipboard.writeText(text).then(() => {
       alert(mode === 'normal' ? '복사되었느니라. 벗도 이 운명을 마주하게 하라.' : '저주의 서신이 봉인되었느니라. 이제 전달하거라.');
     });
