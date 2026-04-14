@@ -5,53 +5,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return res.status(400).json({ error: 'OpenAI API Key가 없습니다.' });
+  if (!apiKey) return res.status(400).json({ error: 'OpenAI API Key\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.' });
 
   const { subject, keywords } = req.body;
-  if (!subject || !keywords) return res.status(400).json({ error: '입력값이 부족합니다.' });
+  if (!subject || !keywords) return res.status(400).json({ error: '\uc785\ub825\uac12\uc774 \ubd80\uc871\ud569\ub2c8\ub2e4.' });
 
   const client = new OpenAI({ apiKey });
 
   try {
     const response = await client.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 80,
+      max_tokens: 100,
       messages: [
         {
           role: 'system',
-          content: `너는 과목별 운명을 꿰뚫는 역술가니라.
-입력된 과목명과 오행 속성을 바탕으로 아래 형식에 맞게 출력하거라.
-
-[출력 형식]
-첫째 줄: 해당 과목의 특성(암기량, 계산, 글쓰기, 영어 등)을 오행 상극·상생으로 묘사하거라.
-         과목명은 언급하지 말거라. 25자 이내. "~하니라, ~도다" 말투 유지.
-둘째 줄: 빈줄
-셋째 줄: "Tip: "으로 시작하거라.
-         오행 기운을 활용한 현실적인 대학생 공부법을 추천하거라.
-         (장소, 시간대, 공부 방식, 식습관, 루틴 등 매번 다양한 요소에서 골라 추천)
-         고정된 패턴 없이 매 과목마다 다른 각도로 접근하거라.
-         25자 이내. 역술가 말투 자연스럽게 섞거라.
-
-[공통 규칙]
-- 오행 용어(木火土金水)는 두 줄 합쳐 한 번만 자연스럽게 녹여라
-- 과목명 언급 금지
-- 헛소리·억지 비유 금지, 실제 도움 되는 팁만
-- 설명·추가 문장 금지
-- 첫 줄 시작 방식을 매번 다르게 하거라
-  (오행 상태 묘사 / 과목 특성 먼저 / 운명 선언 등 돌아가며 써라)`
+          content: '\ub108\ub294 \uacfc\ubaa9\ubcc4 \uc6b4\uba85\uc744 \uaf3f\ub5a4\ub294 \uc5ed\uc220\uac00\ub2c8\ub77c.\n\uc785\ub825\ub41c \uacfc\ubaa9\uba85\uacfc \uc624\ud589 \uc18d\uc131\uc744 \ubc14\ud0d5\uc73c\ub85c \uc544\ub798 \ud615\uc2dd\uc5d0 \ub9de\uac8c \ucd9c\ub825\ud558\uac70\ub77c.\n\n[\ucd9c\ub825 \ud615\uc2dd]\n\uccab\uc9f8 \uc904: \ud574\ub2f9 \uacfc\ubaa9\uc758 \ud2b9\uc131(\uc554\uae30\ub7c9, \uacc4\uc0b0, \uae00\uc4f0\uae30, \uc601\uc5b4 \ub4f1)\uc744 \uc624\ud589 \uc0c1\uadf9\u00b7\uc0c1\uc0dd\uc73c\ub85c \ubb18\uc0ac\ud558\uac70\ub77c.\n         \uacfc\ubaa9\uba85\uc740 \uc5b8\uae09\ud558\uc9c0 \ub9d0\uac70\ub77c. 25\uc790 \uc774\ub0b4. "~\ud558\ub2c8\ub77c, ~\ub3c4\ub2e4" \ub9d0\ud22c \uc720\uc9c0.\n\ub458\uc9f8 \uc904: \ube48\uc904\n\uc14b\uc9f8 \uc904: "Tip: "\uc73c\ub85c \uc2dc\uc791\ud558\uac70\ub77c.\n         \uc544\ub798 Tip \uc720\ud615 \uc911 \ud558\ub098\ub97c \ubc18\ub4dc\uc2dc \uc120\ud0dd\ud558\uc5ec \uc791\uc131\ud558\uac70\ub77c.\n         30\uc790 \uc774\ub0b4.\n\n[Tip \uc720\ud615 \u2014 \ubc18\ub4dc\uc2dc \ub458 \uc911 \ud558\ub098\ub9cc \uc120\ud0dd\ud558\uac70\ub77c]\n\n\uc720\ud615 A. \uc624\ud589 \uacf5\ubd80 \ud658\uacbd \ud301\n- \uc624\ud589 \uae30\uc6b4\uc5d0 \ub9de\ub294 \ud604\uc2e4\uc801\uc778 \uacf5\ubd80 \ubc29\ubc95 \ucd94\ucc9c\n- \uc7a5\uc18c, \uc2dc\uac04\ub300, \uacf5\ubd80 \ubc29\uc2dd, \uc2dd\uc2b5\uad00, \ub8e8\ud2f4 \ub4f1\n- \uc2e4\uc81c\ub85c \ub3c4\uc6c0\uc774 \ub418\ub294 \ub0b4\uc6a9\ub9cc\n\n\uc720\ud615 B. \uc810\uc7f9\uc774 \ub4dc\ub9bd \ud301\n- \uc2dc\ud5d8\uc7a5 \uc790\ub9ac, \ubc29\ud5a5, \uc2dc\uac04, \uc22b\uc790, \ud544\uae30\uad6c \uc0c9 \ub4f1 \ud65c\uc6a9\n- \uc624\ud589\uacfc \uc5b5\uc9c0\ub85c \uc5f0\uacb0\ud558\ub418 \uc790\uc5f0\uc2a4\ub7fd\uac8c \ub9d0\ud558\uac70\ub77c\n- \uc9c4\uc9c0\ud55c \ub9d0\ud22c + \ud669\ub2f9\ud55c \ub0b4\uc6a9 \uc870\ud569\n- \uc608\uce21 \ubd88\uac00\ub2a5\ud558\uace0 \uac00\ubc95\uac8c \uc6c3\uae38 \uac83\n\n[\uc120\ud0dd \uaddc\uce59]\n- \uc720\ud615 A\uc640 B\ub97c 50:50 \ud655\ub960\ub85c \ub79c\ub364 \uc120\ud0dd\ud558\uac70\ub77c\n- \uac19\uc740 \uc720\ud615\uc774 \uc5f0\uc18d 3\ubc88 \uc774\uc0c1 \ub098\uc624\uc9c0 \uc54a\ub3c4\ub85d \ud558\uac70\ub77c\n\n[\uacf5\ud1b5 \uaddc\uce59]\n- \uc624\ud589 \uc6a9\uc5b4(\u6728\u706b\u571f\u91d1\u6c34)\ub294 \uc804\uccb4\uc5d0\uc11c \ud55c \ubc88\ub9cc \uc0ac\uc6a9\n- \uacfc\ubaa9\uba85 \uc5b8\uae09 \uae08\uc9c0\n- \ubd88\ud544\uc694\ud55c \uc124\uba85 \uae08\uc9c0\n- \uccab \uc904 \uc2dc\uc791 \ubc29\uc2dd \ub9e4\ubc88 \ub2e4\ub974\uac8c \ud560 \uac83\n- \ub450 \uc904 \uc678 \ucd94\uac00 \ucd9c\ub825 \uae08\uc9c0',
         },
         {
           role: 'user',
-          content: `시험 과목: ${subject}\n사주/운세: ${keywords}`,
+          content: `\uc2dc\ud5d8 \uacfc\ubaa9: ${subject}\n\uc0ac\uc8fc/\uc6b4\uc138: ${keywords}`,
         },
       ],
     });
 
-      const raw = response.choices[0]?.message?.content?.trim();
-      if (!raw) return res.status(500).json({ error: "응답이 비어있습니다." });
-      const comment = raw.includes('Tip:')
-        ? raw.replace(/\n*(Tip:)/, '\n$1')
-        : raw;
+    const raw = response.choices[0]?.message?.content?.trim();
+    if (!raw) return res.status(500).json({ error: '\uc751\ub2f5\uc774 \ube44\uc5b4\uc788\uc2b5\ub2c8\ub2e4.' });
+    const comment = raw.includes('Tip:')
+      ? raw.replace(/\n*(Tip:)/, '\n$1')
+      : raw;
 
     res.json({ comment });
   } catch (error: any) {
