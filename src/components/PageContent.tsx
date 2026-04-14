@@ -35,7 +35,7 @@ export default function PageContent({ type, myData, setMyData, draftMyData, setD
     <div className="h-full flex flex-col relative z-[2]">
       {renderContent()}
       <div className={`absolute bottom-2 text-[9px] text-[#A09060] font-serif ${pageNumber % 2 === 0 ? 'left-4' : 'right-4'}`}>
-        {type === 'cover' ? '표지' : type === 'fin' ? '終' : pageNumber}
+        {type === 'cover' ? '' : type === 'fin' ? '終' : pageNumber}
       </div>
     </div>
   );
