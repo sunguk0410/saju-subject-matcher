@@ -7,8 +7,9 @@ interface LandingProps {
 
 export default function Landing({ onOpen }: LandingProps) {
   const [hovered, setHovered] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 
-  const coverTransform = hovered
+  const coverTransform = (!isMobile && hovered)
     ? 'perspective(900px) rotateX(4deg) rotateY(-10deg) translateY(-10px)'
     : 'perspective(900px) rotateX(4deg) rotateY(-22deg)';
 
