@@ -18,7 +18,7 @@ export const CoverPage = () => (
         fontWeight: 600, fontSize: 13, lineHeight: '19px',
         letterSpacing: '0.22em', color: '#8E5818',
       }}>
-        ♦︎과목 궁합 길잡이♦
+        ♦︎과목 궁합 길잡이♦︎
       </div>
 
       {/* 八字大學 */}

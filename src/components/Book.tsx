@@ -200,7 +200,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
               initial="enter"
               animate="center"
               exit="exit"
-              className={`absolute inset-0 bg-[#FAF3DC] overflow-x-hidden no-scrollbar ${mobilePage === 0 ? 'overflow-hidden' : 'overflow-y-auto'}`}
+              className={`absolute inset-0 page-bg overflow-x-hidden no-scrollbar ${mobilePage === 0 ? 'overflow-hidden' : 'overflow-y-auto'}`}
               style={{ touchAction: mobilePage === 0 ? 'none' : 'pan-y' }}
             >
               <PageContent

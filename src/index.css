@@ -13,7 +13,9 @@ body {
 
 .page-bg {
   position: relative;
-  background: url('/noise.png') repeat;
+  background-color: #FAF3DC;
+  background-image: url('/noise.png');
+  background-repeat: repeat;
 }
 
 .no-scrollbar {
