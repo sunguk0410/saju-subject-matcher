@@ -253,7 +253,7 @@ export const handleSaveImage = (userData: UserData, aiFortune: string, fileName:
   ctx.fillStyle = '#C8A14B';
   ctx.font = `bold 32px serif`;
   ctx.textAlign = 'center';
-  ctx.fillText('✦ 슝슝이 사주풀이 · 중간고사 특별판 ✦', W / 2, H - 64);
+  ctx.fillText('✦ 팔자대로 · 중간고사 운빨전략 ✦', W / 2, H - 64);
 
   // 다운로드
   const link = document.createElement('a');
@@ -376,7 +376,7 @@ export const handleSaveSubjCompat = (userData: UserData, fileName: string) => {
 
   // 워터마크
   ctx.fillStyle = '#C8A14B'; ctx.font = `bold 30px serif`; ctx.textAlign = 'center';
-  ctx.fillText('✦ 슝슝이 사주풀이 · 중간고사 특별판 ✦', W / 2, H - 46);
+  ctx.fillText('✦ 팔자대로 · 중간고사 운빨전략 ✦', W / 2, H - 46);
 
   const link = document.createElement('a');
   link.download = `${fileName}.png`;
