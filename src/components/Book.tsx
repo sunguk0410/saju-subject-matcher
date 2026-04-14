@@ -191,7 +191,7 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
           </button>
         </div>
 
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-hidden" style={{ touchAction: 'pan-y', overflowX: 'hidden' }}>
           <AnimatePresence mode="sync" custom={mobileDir}>
             <motion.div
               key={mobilePage}
@@ -200,7 +200,8 @@ export default function Book({ myData, setMyData, draftMyData, setDraftMyData, a
               initial="enter"
               animate="center"
               exit="exit"
-              className="absolute inset-0 bg-[#FAF3DC] overflow-y-auto no-scrollbar"
+              className="absolute inset-0 bg-[#FAF3DC] overflow-y-auto overflow-x-hidden no-scrollbar"
+              style={{ touchAction: 'pan-y' }}
             >
               <PageContent
                 type={ALL_PAGES[mobilePage].type}
