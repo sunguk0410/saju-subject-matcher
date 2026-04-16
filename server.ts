@@ -83,6 +83,67 @@ async function startServer() {
     }
   });
 
+  const subjPrompt1 = `너는 장난기 넘치는 역술가니라.
+과목의 공부 특성을 오행에 빗대어 아래 3가지를 자유롭게 써라.
+
+1) 해당 과목의 핵심 공부 특성 키워드 2개 (예: 계산, 실수)
+2) 그 특성을 오행 상극·상생에 빗댄 운세 한 줄 (고어체, 자연스럽게)
+3) 팁 한 줄: 아래 A 또는 B 중 택1
+   A) 과목에 맞는 현실적 공부법을 오행에 연결 (장소, 시간대, 방식, 루틴 등)
+   B) 진지한 말투로 황당한 미신 드립 (빨간 팬티, 시험지 냄새 맡기, 답 찍기 방향, 연필 굴리기, 지우개 안 가져가기 등)
+
+규칙:
+- 과목명 직접 언급 금지
+- 오행 한자(木火土金水) 한 번만 사용 (팁에서만)
+- 운세와 팁 합쳐서 과목 특성이 확실히 드러나야 함. 아무 과목에나 붙일 수 있는 범용 표현 금지.
+- 위 3가지만 출력. 다른 설명 금지.`;
+
+  const subjPrompt2 = `아래 운세 원문을 규칙에 맞게 JSON으로 변환하라.
+설명 없이 JSON만 출력.
+
+[문법 규칙 - "하니라, 도다" 두 절 구조]
+조립 공식: front + "하니라, " + back + "도다"
+- front: "~하니라" 앞에 올 부분. 반드시 형용사로 끝남.
+- back: "~도다" 앞에 올 부분. 반드시 "명사+이/가 명사+이"로 끝남.
+
+[글자수 제한]
+- front + "하니라, " + back + "도다" 합쳐서 50자 이내
+- tip은 "Tip: " 포함 60자 이내
+
+[올바른 변환 예시]
+원문: 셈은 매섭건만 끗발이 약하니, 정밀함이야말로 관건이로다
+→ {"front":"셈이 매서우나 끗발이 약","back":"정밀함이 관건이","tip":"Tip: 金 기운에 4번 답 세 번 찍으면 길하니라"}
+
+원문: 갈래가 넓건만 뿌리가 흐리하니, 반복이야 살 길이로다
+→ {"front":"갈래 넓으나 뿌리가 흐리","back":"반복이 살 길이","tip":"Tip: 水 기운 따라 밤 10시 듣기부터 시작하거라"}
+
+원문: 박자는 뜨겁건만 손목이 굳었으니, 리듬이 곧 전부로다
+→ {"front":"박이 뜨거우나 손목이 뻣뻣","back":"리듬이 전부이","tip":"Tip: 火 기운에 스틱 돌려 3바퀴면 신기 깃드니라"}
+
+[금지]
+❌ front가 동사로 끝남 (흩어지, 넘치, 끊기)
+❌ back이 동사나 형용사로 끝남
+❌ back이 "이"로 안 끝남
+❌ 50자 초과`;
+
+  const validateSubj = (json: any, subject: string): string[] => {
+    const errors: string[] = [];
+    if (!json.front || !json.back || !json.tip) return ["필드 누락"];
+    if (!String(json.back).trim().endsWith("이")) errors.push("back 형식");
+    const line1 = `${json.front}하니라, ${json.back}도다`;
+    if ([...line1].length > 50) errors.push(`1줄 ${[...line1].length}자`);
+    if ([...json.tip].length > 60) errors.push(`Tip ${[...json.tip].length}자`);
+    if (!String(json.tip).startsWith("Tip: ")) errors.push("Tip 접두어");
+    if (String(json.front + json.back + json.tip).includes(subject)) errors.push("과목명 포함");
+    const all = `${json.front} ${json.back} ${json.tip}`;
+    const count = ["木", "火", "土", "金", "水"].reduce((s, h) => s + (all.split(h).length - 1), 0);
+    if (count !== 1) errors.push(`오행 ${count}회`);
+    return errors;
+  };
+
+  const assembleSubj = (json: { front: string; back: string; tip: string }): string =>
+    `${json.front}하니라, ${json.back}도다\n\n${json.tip}`;
+
   app.post("/api/subj-comment", async (req, res) => {
     if (!apiKey) return res.status(400).json({ error: "OpenAI API Key가 없습니다." });
 
@@ -90,70 +151,56 @@ async function startServer() {
     if (!subject || !keywords) return res.status(400).json({ error: "입력값이 부족합니다." });
 
     const client = new OpenAI({ apiKey });
-
-const systemPrompt = [
-  '너는 과목별 운명을 꿰뚫는 역술가니라.',
-  '입력된 과목명과 오행 속성을 바탕으로 아래 형식에 맞게 출력하거라.',
-  '',
-  '[출력 형식]',
-  '1줄: 해당 과목의 특성(암기량, 계산, 글쓰기, 영어 등)을 오행 상극·상생으로 묘사하거라.',
-  '     과목명은 언급하지 말거라. 25자 이내.',
-  '2줄: 빈 줄',
-  '3줄: "Tip: "으로 시작하거라. 아래 Tip 유형 중 하나를 반드시 선택하여 작성하거라. 30자 이내.',
-  '출력은 정확히 이 3줄 구조만 허용하거라. 추가 출력 금지.',
-  '',
-  '[문법 규칙]',
-  '- 1줄은 반드시"(내용)하니라, (내용)도다" 두 절 구조',
-  '- "하니라" 앞: 형용사만. "도다" 앞: 명사만.',
-  '',
-  '[잘못된 문법 예시 - 절대 금지]',
-  '암기가 흩어지도다.', '소통도다.', '창의가 넘치고도다.',
-  '[Tip 유형 - 유형 A와 유형 B 중 하나만 선택하거라]',
-  '',
-  '유형 A. 오행 공부 환경 팁',
-  '- 오행 기운에 맞는 현실적인 공부 방법 추천',
-  '- 장소, 시간대, 공부 방식, 식습관, 루틴 등',
- 
-  '',
-  '유형 B. 점쟁이 드립 팁',
-  '- 시험장 자리, 방향, 시간, 숫자, 필기구 색 등 활용',
-  '- 진지한 말투 + 오행과 연결된 황당한 내용 조합으로 웃길 것',
-  '',
-  '[공통 규칙]',
-  '- 오행 용어(木火土金水)는 전체에서 한 번만 사용',
-  '- 과목명 언급 금지',
-  '- 1줄 시작 방식 매번 다르게 할 것',
-  '',
-  '[올바른 예시]',
-  '# 유형 A',
-  'Tip: 金 기운이 날카로우나 흐름이 약하니라, 정밀함이 관건이도다.',
-  'Tip: 火 기운이 넘치나 지속이 어렵하니라, 집중이 승부수도다.',
-  '# 유형 B',
-  'Tip: 金 기운이 도우니 왼쪽 끝 자리가 길하니라',
-  'Tip: 火 기운이 강하니 오늘은 빨간 펜으로 찍어라',
-  "Tip: 木이 솟는 아침, 3번 찍으면 정기가 깃드니라",
-].join('\n');
+    const MAX_RETRY = 3;
+    let lastJson: any = null;
 
     try {
-      const response = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        max_tokens: 100,
-        messages: [
-          { role: "system", content: systemPrompt },
-          {
-            role: "user",
-            content: `시험 과목: ${subject}\n사주/운세: ${keywords}`,
-          },
-        ],
-      });
+      for (let attempt = 0; attempt < MAX_RETRY; attempt++) {
+        const step1Res = await client.chat.completions.create({
+          model: "gpt-4o-mini",
+          temperature: 0.9,
+          max_tokens: 200,
+          messages: [
+            { role: "system", content: subjPrompt1 },
+            { role: "user", content: `시험 과목: ${subject}\n사주/운세: ${keywords}` },
+          ],
+        });
 
-      const raw = response.choices[0]?.message?.content?.trim();
-      if (!raw) return res.status(500).json({ error: "응답이 비어있습니다." });
-      const comment = raw.includes('Tip:')
-        ? raw.replace(/\n*(Tip:)/, '\n$1')
-        : raw;
+        const raw = step1Res.choices[0]?.message?.content?.trim();
+        if (!raw) continue;
 
-      res.json({ comment });
+        const step2Res = await client.chat.completions.create({
+          model: "gpt-4o-mini",
+          temperature: 0.2,
+          max_tokens: 150,
+          messages: [
+            { role: "system", content: subjPrompt2 },
+            { role: "user", content: raw },
+          ],
+        });
+
+        const jsonStr = step2Res.choices[0]?.message?.content?.trim();
+        if (!jsonStr) continue;
+
+        let parsed: any;
+        try {
+          const match = jsonStr.match(/\{[\s\S]*\}/);
+          if (!match) continue;
+          parsed = JSON.parse(match[0]);
+        } catch {
+          continue;
+        }
+
+        const errors = validateSubj(parsed, subject);
+        lastJson = parsed;
+
+        if (errors.length === 0) {
+          return res.json({ comment: assembleSubj(parsed) });
+        }
+      }
+
+      if (lastJson) return res.json({ comment: assembleSubj(lastJson) });
+      return res.status(500).json({ error: "운세 생성에 실패했습니다." });
     } catch (error: any) {
       console.error("OpenAI 과목 코멘트 오류:", error.message);
       res.status(500).json({ error: error.message });
