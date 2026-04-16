@@ -60,7 +60,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const response = await client.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 200,
+      max_tokens: 150,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: `시험 과목: ${subject}\n사주/운세: ${keywords}` },
