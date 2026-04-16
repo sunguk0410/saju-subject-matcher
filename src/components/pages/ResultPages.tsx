@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   getSajuValue, getFiveElements, pick,
   OHC, OHK, OHF, SajuPillar,
-  BYEONGMAT_COMMENTS, HANJA_INFO,
+  BYEONGMAT_COMMENTS, HANJA_INFO, FUNNY_TIPS,
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
 import { fetchSubjComment } from '../../lib/utils';
@@ -277,12 +277,12 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
       return;
     }
 
+    setLoadingComments(true);
+    setAiComments({});
+
     const s = myData.saju;
     const sv = getSajuValue(s);
     const myOh = getFiveElements(s);
-
-    setLoadingComments(true);
-    setAiComments({});
 
     const promises = myData.subjects.map((subj: string, i: number) => {
       const oh = getSubjOh(subj);
@@ -351,6 +351,12 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
                     </span>
                   ) : comment}
                 </div>
+                {!isLoading && comment && (
+                  <div className="mt-1.5 text-[10px] text-[#5C3010] italic"
+                    style={{ wordBreak: 'keep-all' }}>
+                    {FUNNY_TIPS[(sv + i) % FUNNY_TIPS.length]}
+                  </div>
+                )}
               </div>
             );
           })}
