@@ -325,7 +325,8 @@ export const handleSaveSubjCompat = (userData: UserData, fileName: string, aiCom
 
   const subjects = userData.subjects.map((subj, i) => {
     const oh = getSubjOh(subj);
-    const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
+    const ohCode = oh.codePointAt(0) ?? 0;
+    const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + ohCode) % 20 + i % 7));
     const comment = aiComments?.[i] || (score >= 80
       ? '이 과목은 당신의 기운과 찰떡궁합! 공부한 만큼 성적이 나올 것이로다.'
       : score >= 60

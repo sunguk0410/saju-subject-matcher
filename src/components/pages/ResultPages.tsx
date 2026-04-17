@@ -283,7 +283,8 @@ export const SubjCompatPage = ({ myData }: any) => {
 
     const promises = myData.subjects.map((subj: string, i: number) => {
       const oh = getSubjOh(subj);
-      const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
+      const ohCode = oh.codePointAt(0) ?? 0;
+      const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + ohCode) % 20 + i % 7));
       const topEls = Object.entries(myOh as Record<string, number>)
         .filter(([, v]) => v > 0)
         .sort(([, a], [, b]) => b - a)
@@ -322,7 +323,8 @@ export const SubjCompatPage = ({ myData }: any) => {
         <div className="flex-1 overflow-y-auto no-scrollbar space-y-3">
           {myData.subjects.map((subj: string, i: number) => {
             const oh = getSubjOh(subj);
-            const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
+            const ohCode = oh.codePointAt(0) ?? 0;
+            const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + ohCode) % 20 + i % 7));
             const elementColor = OHF[oh];
             const comment = aiComments[i];
             const isLoading = loadingComments && !aiComments[i];
