@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CLICKBAIT_TITLES, DISTRACTION_CURSES, STUDY_TIPS, getSajuValue } from '../../constants';
+import { CLICKBAIT_TITLES, DISTRACTION_CURSES, DDAN_JIT_TACTICS, getSajuValue } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
 
 export const SharePage = ({ myData }: any) => {
@@ -9,7 +9,7 @@ export const SharePage = ({ myData }: any) => {
   if (!myData) return <LoadingPlaceholder text="내 사주를 먼저 입력해주세요" />;
 
   const sv = getSajuValue(myData.saju);
-  const tips = [0, 1, 2].map(i => STUDY_TIPS[(sv + i * 4) % STUDY_TIPS.length]);
+  const tactic = DDAN_JIT_TACTICS[sv % DDAN_JIT_TACTICS.length];
 
   const handleCopy = (mode: 'normal' | 'curse') => {
     const text = mode === 'normal'
@@ -34,14 +34,12 @@ export const SharePage = ({ myData }: any) => {
 
         <div className="bg-[#C8A14B]/10 border border-[#C8A14B]/20 rounded-xl p-3.5 mb-3 shadow-md">
           <div className="text-[12px] text-[#8B6914] font-bold mb-2">
-            ✦ 시험공부 전략지 (試驗攻略)
+            ✦ 시험 기간 딴 짓 전략 (雜念戰略)
           </div>
-          <ul className="text-[12px] text-[#3D1F0A] space-y-1.5 list-disc pl-4 font-medium">
-            {tips.map(([before, highlight, after], i) => (
-              <li key={i}>{before} <span className="text-[#8B1A1A]">{highlight}</span>{after}</li>
-            ))}
-          </ul>
-          <p className="text-[10px] text-[#A09060] mt-2 text-right">* 본 전략지는 오행의 이치에 의거하였으니 과학적 근거는 논하지 말지어다.</p>
+          <p className="text-[12px] text-[#3D1F0A] leading-relaxed font-medium">
+            {tactic}
+          </p>
+          <p className="text-[10px] text-[#A09060] mt-2 text-right">* 본 전략은 오행의 이치에 의거하였으니 실천 여부는 본인 책임이니라.</p>
         </div>
 
         <div className="bg-[#8B1A1A]/5 border border-[#8B1A1A]/15 rounded-xl p-3.5 mb-3 shadow-md">
