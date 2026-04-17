@@ -7,7 +7,7 @@ import {
   HANJA_INFO, FUNNY_TIPS,
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
-import { fetchSubjComment, handleSaveSubjCompat } from '../../lib/utils';
+import { fetchSubjComment, captureScreen } from '../../lib/utils';
 
 const PENTAGON = [
   { key: '목', x: 100, y: 20  },
@@ -172,11 +172,11 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
   }));
 
   return (
-    <div className="w-full h-full page-bg">
-      <div className="pt-4 px-4" id="my-result-1">
+    <div className="w-full h-full page-bg" id="my-result-1">
+      <div className="pt-4 px-4">
         <div className="relative flex items-center justify-center mb-2">
           <div className="font-serif text-[16px] font-bold text-[#3D1F0A]">{myData.name}의 사주</div>
-          <button onClick={(e) => { e.stopPropagation(); onSave(); }}
+          <button onClick={(e) => { e.stopPropagation(); captureScreen('my-result-1', `${myData.name}_사주결과`); }}
             className="absolute right-0 p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
             💾 저장
           </button>
@@ -310,11 +310,11 @@ export const SubjCompatPage = ({ myData }: any) => {
   const myOh = getFiveElements(s);
 
   return (
-    <div className="w-full h-full page-bg">
-      <div className="pt-4 px-4 h-full flex flex-col" id="subj-compat">
+    <div className="w-full h-full page-bg" id="subj-compat">
+      <div className="pt-4 px-4 h-full flex flex-col">
         <div className="relative flex items-center justify-center mb-3">
           <div className="font-serif text-[16px] font-bold text-[#3D1F0A]">과목별 궁합 분석 (科目宮合)</div>
-          <button onClick={(e) => { e.stopPropagation(); myData && handleSaveSubjCompat(myData, '과목궁합_결과', aiComments); }}
+          <button onClick={(e) => { e.stopPropagation(); captureScreen('subj-compat', '과목궁합_결과'); }}
             className="absolute right-0 p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
             💾 저장
           </button>

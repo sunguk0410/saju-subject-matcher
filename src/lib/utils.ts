@@ -1,5 +1,21 @@
+import domtoimage from 'dom-to-image-more';
 import { UserData } from '../types';
 import { getFiveElements, getSajuValue, pick, OHF, OHK, BYEONGMAT_COMMENTS } from '../constants';
+
+export const captureScreen = async (elementId: string, fileName: string) => {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const dataUrl = await domtoimage.toPng(el, {
+    scale: 2,
+    width: el.offsetWidth,
+    height: el.scrollHeight,
+    style: { overflow: 'visible' },
+  });
+  const link = document.createElement('a');
+  link.download = `${fileName}.png`;
+  link.href = dataUrl;
+  link.click();
+};
 
 export const fetchAiFortune = async (userData: UserData): Promise<string> => {
   try {
