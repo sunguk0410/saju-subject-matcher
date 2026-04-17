@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  getSajuValue, getFiveElements, pick,
+  getSajuValue, getFiveElements,
   OHC, OHK, OHF, SajuPillar,
-  BYEONGMAT_COMMENTS, HANJA_INFO, FUNNY_TIPS,
+  HANJA_INFO, FUNNY_TIPS,
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
 import { fetchSubjComment } from '../../lib/utils';
@@ -191,7 +191,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
             <span className="text-base">✦</span> 하늘이 내린 전언
           </div>
           <div className="text-[12px] text-[#3D1F0A] leading-relaxed font-medium"
-            style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all', minHeight: 30 }}>
+            style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all', minHeight: 56 }}>
             {loadingAi ? (
               <div className="flex items-center gap-2">
                 <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -205,7 +205,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
         </div>
 
         {/* 사주 팔자 */}
-        <div className="text-[11px] text-[#8B6914] font-bold mb-0.5 uppercase tracking-wider">사주 팔자 (四柱八字)</div>
+        <div className="text-[11px] text-[#8B6914] font-bold mb-0.5 uppercase tracking-wider mt-3">사주 팔자 (四柱八字)</div>
         <p className="text-[10px] text-[#A09060] mb-1.5">
           * 년·월·일·시주는 태어난 연도·달·날짜·시간을 의미합니다. &nbsp;
           각 박스의 <span className="text-[#C8A14B]/70 font-bold">i</span> 버튼으로 한자를 풀어보세요.
@@ -250,9 +250,6 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
           </div>
         </div>
 
-        <div className="bg-[#8B1A1A]/5 border-l-2 border-[#8B1A1A]/60 p-2.5 rounded-r-lg text-[11px] text-[#5C1608] leading-relaxed shadow-md">
-          {pick(BYEONGMAT_COMMENTS, getSajuValue(s))}
-        </div>
       </div>
     </div>
   );
