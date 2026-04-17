@@ -59,7 +59,7 @@ async function startServer() {
     try {
       const response = await client.chat.completions.create({
         model: "gpt-4o-mini",
-        max_tokens: 120,
+        max_tokens: 250,
         messages: [
           { role: "system", content: systemPrompt },
           {
