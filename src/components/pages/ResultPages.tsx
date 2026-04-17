@@ -6,9 +6,8 @@ import {
   OHC, OHK, OHF, SajuPillar,
   HANJA_INFO, FUNNY_TIPS,
 } from '../../constants';
-import html2canvas from 'html2canvas';
 import { LoadingPlaceholder } from './CommonPages';
-import { fetchSubjComment } from '../../lib/utils';
+import { fetchSubjComment, handleSaveSubjCompat } from '../../lib/utils';
 
 const PENTAGON = [
   { key: '목', x: 100, y: 20  },
@@ -315,16 +314,7 @@ export const SubjCompatPage = ({ myData }: any) => {
       <div className="pt-4 px-4 h-full flex flex-col" id="subj-compat">
         <div className="relative flex items-center justify-center mb-3">
           <div className="font-serif text-[16px] font-bold text-[#3D1F0A]">과목별 궁합 분석 (科目宮合)</div>
-          <button onClick={async (e) => {
-            e.stopPropagation();
-            const el = document.getElementById('subj-compat');
-            if (!el) return;
-            const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: null });
-            const link = document.createElement('a');
-            link.download = '과목궁합_결과.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-          }}
+          <button onClick={(e) => { e.stopPropagation(); myData && handleSaveSubjCompat(myData, '과목궁합_결과', aiComments); }}
             className="absolute right-0 p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
             💾 저장
           </button>
