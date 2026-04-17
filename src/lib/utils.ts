@@ -6,35 +6,41 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const el = document.getElementById(elementId);
   if (!el) return;
 
-  // 스크롤 영역을 전체 높이로 펼치기
-  const scrollEls = el.querySelectorAll<HTMLElement>('.overflow-y-auto, .no-scrollbar');
-  const prevStyles: { el: HTMLElement; overflow: string; height: string; maxHeight: string }[] = [];
+  // 버튼 완전히 숨기기 (레이아웃에서 제거)
+  const btns = el.querySelectorAll<HTMLElement>('button');
+  btns.forEach(b => { b.style.display = 'none'; });
+
+  // noise.png 대신 직접 배경색 지정
+  const origBg = el.style.background;
+  el.style.background = '#FAF3DC';
+
+  // 스크롤 영역 전체 높이로 펼치기
+  const scrollEls = el.querySelectorAll<HTMLElement>('.overflow-y-auto');
+  const saved: { el: HTMLElement; ov: string; h: string; mh: string }[] = [];
   scrollEls.forEach(s => {
-    prevStyles.push({ el: s, overflow: s.style.overflow, height: s.style.height, maxHeight: s.style.maxHeight });
+    saved.push({ el: s, ov: s.style.overflow, h: s.style.height, mh: s.style.maxHeight });
     s.style.overflow = 'visible';
     s.style.height = s.scrollHeight + 'px';
     s.style.maxHeight = 'none';
   });
+
+  // DOM 반영 대기
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
   const dataUrl = await domtoimage.toPng(el, {
     scale: 2,
     bgcolor: '#FAF3DC',
     width: el.offsetWidth,
     height: el.scrollHeight,
-    filter: (node: Node) => {
-      if (node instanceof HTMLElement) {
-        // 저장 버튼 제외
-        if (node.tagName === 'BUTTON' && node.textContent?.includes('저장')) return false;
-      }
-      return true;
-    },
   });
 
-  // 스크롤 영역 복원
-  prevStyles.forEach(({ el: s, overflow, height, maxHeight }) => {
-    s.style.overflow = overflow;
-    s.style.height = height;
-    s.style.maxHeight = maxHeight;
+  // 복원
+  btns.forEach(b => { b.style.display = ''; });
+  el.style.background = origBg;
+  saved.forEach(({ el: s, ov, h, mh }) => {
+    s.style.overflow = ov;
+    s.style.height = h;
+    s.style.maxHeight = mh;
   });
 
   const link = document.createElement('a');
