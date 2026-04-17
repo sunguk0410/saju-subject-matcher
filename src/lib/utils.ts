@@ -6,35 +6,32 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const el = document.getElementById(elementId);
   if (!el) return;
 
-  // 저장 버튼 숨기기 (원본에서)
-  const btns = el.querySelectorAll<HTMLElement>('button');
-  btns.forEach(b => { b.style.visibility = 'hidden'; });
+  // fixed 컨테이너 밖으로 클론해서 캡처 (html2canvas의 fixed 부모 버그 우회)
+  const clone = el.cloneNode(true) as HTMLElement;
+  clone.style.cssText = `position: fixed; left: -9999px; top: 0; width: ${el.offsetWidth}px; background: #FAF3DC; overflow: visible; z-index: -1;`;
 
-  // 스크롤 영역 전체 높이로 펼치기
-  const scrollEls = el.querySelectorAll<HTMLElement>('.overflow-y-auto');
-  const saved: { el: HTMLElement; ov: string; h: string; mh: string }[] = [];
-  scrollEls.forEach(s => {
-    saved.push({ el: s, ov: s.style.overflow, h: s.style.height, mh: s.style.maxHeight });
+  // 클론에서 버튼 제거
+  clone.querySelectorAll<HTMLElement>('button').forEach(b => { b.style.display = 'none'; });
+
+  // 클론에서 스크롤 영역 전체 펼치기
+  clone.querySelectorAll<HTMLElement>('.overflow-y-auto').forEach(s => {
     s.style.overflow = 'visible';
-    s.style.height = s.scrollHeight + 'px';
+    s.style.height = 'auto';
     s.style.maxHeight = 'none';
   });
 
-  // 배경 고정
-  const origBg = el.style.background;
-  el.style.background = '#FAF3DC';
-
+  document.body.appendChild(clone);
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
   try {
-    const canvas = await html2canvas(el, {
+    const canvas = await html2canvas(clone, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#FAF3DC',
       logging: false,
       scrollX: 0,
-      scrollY: 0,
+      scrollY: -window.scrollY,
     });
 
     const link = document.createElement('a');
@@ -45,16 +42,8 @@ export const captureScreen = async (elementId: string, fileName: string) => {
     document.body.removeChild(link);
   } catch (e) {
     console.error('captureScreen 오류:', e);
-    alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
   } finally {
-    // 원상복구
-    btns.forEach(b => { b.style.visibility = ''; });
-    el.style.background = origBg;
-    saved.forEach(({ el: s, ov, h, mh }) => {
-      s.style.overflow = ov;
-      s.style.height = h;
-      s.style.maxHeight = mh;
-    });
+    document.body.removeChild(clone);
   }
 };
 

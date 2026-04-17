@@ -44,11 +44,7 @@ Strict:
 
 Format:
 첫 문장
-두 번째 문장
-
-Example:
-木인 네 기운이 金 과목과 부딪힌다. 잘 하다가도 시험에서 흐름이 끊긴다.
-水인 네 기운이 土 과목에 막힌다. 이해는 되는데 시험에서 정리가 안 된다.`;
+두 번째 문장`;
 
   try {
     const response = await client.chat.completions.create({
