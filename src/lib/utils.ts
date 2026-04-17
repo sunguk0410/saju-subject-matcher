@@ -29,12 +29,12 @@ export const fetchAiFortune = async (userData: UserData): Promise<string> => {
   return "잠시만 기다려주세요, 운명은 서두르지 않습니다.";
 };
 
-export const fetchSubjComment = async (subject: string, keywords: string): Promise<string> => {
+export const fetchSubjComment = async (subject: string, keywords: string, score?: number): Promise<string> => {
   try {
     const response = await fetch('/api/subj-comment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subject, keywords }),
+      body: JSON.stringify({ subject, keywords, score }),
     });
     const data = await response.json();
     if (response.ok && data.comment) return data.comment;
@@ -264,7 +264,7 @@ export const handleSaveImage = (userData: UserData, aiFortune: string, fileName:
   document.body.removeChild(link);
 };
 
-export const handleSaveSubjCompat = (userData: UserData, fileName: string) => {
+export const handleSaveSubjCompat = (userData: UserData, fileName: string, aiComments?: Record<number, string>) => {
   const s = userData.saju;
   const sv = getSajuValue(s);
   const myOh = getFiveElements(s);
@@ -278,11 +278,11 @@ export const handleSaveSubjCompat = (userData: UserData, fileName: string) => {
   const subjects = userData.subjects.map((subj, i) => {
     const oh = getSubjOh(subj);
     const score = Math.min(99, Math.max(30, 40 + (myOh[oh] || 0) * 12 + (sv + i * 13) % 35));
-    const comment = score >= 80
+    const comment = aiComments?.[i] || (score >= 80
       ? '이 과목은 당신의 기운과 찰떡궁합! 공부한 만큼 성적이 나올 것이로다.'
       : score >= 60
       ? '무난한 궁합이다. 노력이 배신하지는 않을 것이니 정진하라.'
-      : '기운이 충돌한다! 남들보다 두 배는 더 노력해야 평타라도 칠 것이로다.';
+      : '기운이 충돌한다! 남들보다 두 배는 더 노력해야 평타라도 칠 것이로다.');
     return { subj, oh, score, comment };
   });
 
@@ -291,8 +291,8 @@ export const handleSaveSubjCompat = (userData: UserData, fileName: string) => {
   const PAD = 72;
   const INNER = W - PAD * 2;
   const HEADER_H = 240;
-  const GAP = 28;
-  const ITEM_H = 220;
+  const GAP = 24;
+  const ITEM_H = 270;
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
@@ -368,8 +368,8 @@ export const handleSaveSubjCompat = (userData: UserData, fileName: string) => {
     roundRect(ctx, PAD + 20, barY, barW * (score / 100), barH, barH / 2); ctx.fill();
 
     // 코멘트
-    ctx.fillStyle = '#5C3010'; ctx.font = `italic ${fs(28)}px serif`; ctx.textAlign = 'left';
-    ctx.fillText(comment, PAD + 20, commentY);
+    ctx.fillStyle = '#5C3010'; ctx.font = `italic ${fs(26)}px serif`; ctx.textAlign = 'left';
+    wrapText(ctx, comment, PAD + 20, commentY, INNER - 40, fs(36));
 
     y += ITEM_H + GAP;
   });

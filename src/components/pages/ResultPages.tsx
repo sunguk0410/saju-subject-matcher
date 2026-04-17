@@ -7,7 +7,7 @@ import {
   HANJA_INFO, FUNNY_TIPS,
 } from '../../constants';
 import { LoadingPlaceholder } from './CommonPages';
-import { fetchSubjComment } from '../../lib/utils';
+import { fetchSubjComment, handleSaveSubjCompat } from '../../lib/utils';
 
 const PENTAGON = [
   { key: '목', x: 100, y: 20  },
@@ -260,7 +260,7 @@ const getSubjOh = (name: string) => {
   return Object.keys(OHK)[hash % Object.keys(OHK).length];
 };
 
-export const SubjCompatPage = ({ myData, onSave }: any) => {
+export const SubjCompatPage = ({ myData }: any) => {
   const [aiComments, setAiComments] = useState<Record<number, string>>({});
   const [loadingComments, setLoadingComments] = useState(false);
 
@@ -291,7 +291,7 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
         .map(([k, v]) => `${OHK[k]}(${v})`)
         .join(' ');
       const keywords = `과목 오행: ${OHK[oh]}, 사주 오행: ${topEls}, 궁합 점수: ${score}점`;
-      return fetchSubjComment(subj, keywords).then(comment => ({ i, comment }));
+      return fetchSubjComment(subj, keywords, score).then(comment => ({ i, comment }));
     });
 
     Promise.all(promises).then(results => {
@@ -314,7 +314,7 @@ export const SubjCompatPage = ({ myData, onSave }: any) => {
       <div className="pt-4 px-4 h-full flex flex-col" id="subj-compat">
         <div className="relative flex items-center justify-center mb-3">
           <div className="font-serif text-[16px] font-bold text-[#3D1F0A]">과목별 궁합 분석 (科目宮合)</div>
-          <button onClick={(e) => { e.stopPropagation(); onSave(); }}
+          <button onClick={(e) => { e.stopPropagation(); myData && handleSaveSubjCompat(myData, '과목궁합_결과', aiComments); }}
             className="absolute right-0 p-1.5 bg-[#C8A14B]/20 rounded-md hover:bg-[#C8A14B]/40 transition-colors text-[10px] text-[#8B6914] font-bold border border-[#C8A14B]/30">
             💾 저장
           </button>
