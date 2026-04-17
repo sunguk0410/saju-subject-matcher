@@ -5,12 +5,38 @@ import { getFiveElements, getSajuValue, pick, OHF, OHK, BYEONGMAT_COMMENTS } fro
 export const captureScreen = async (elementId: string, fileName: string) => {
   const el = document.getElementById(elementId);
   if (!el) return;
+
+  // 스크롤 영역을 전체 높이로 펼치기
+  const scrollEls = el.querySelectorAll<HTMLElement>('.overflow-y-auto, .no-scrollbar');
+  const prevStyles: { el: HTMLElement; overflow: string; height: string; maxHeight: string }[] = [];
+  scrollEls.forEach(s => {
+    prevStyles.push({ el: s, overflow: s.style.overflow, height: s.style.height, maxHeight: s.style.maxHeight });
+    s.style.overflow = 'visible';
+    s.style.height = s.scrollHeight + 'px';
+    s.style.maxHeight = 'none';
+  });
+
   const dataUrl = await domtoimage.toPng(el, {
     scale: 2,
+    bgcolor: '#FAF3DC',
     width: el.offsetWidth,
     height: el.scrollHeight,
-    style: { overflow: 'visible' },
+    filter: (node: Node) => {
+      if (node instanceof HTMLElement) {
+        // 저장 버튼 제외
+        if (node.tagName === 'BUTTON' && node.textContent?.includes('저장')) return false;
+      }
+      return true;
+    },
   });
+
+  // 스크롤 영역 복원
+  prevStyles.forEach(({ el: s, overflow, height, maxHeight }) => {
+    s.style.overflow = overflow;
+    s.style.height = height;
+    s.style.maxHeight = maxHeight;
+  });
+
   const link = document.createElement('a');
   link.download = `${fileName}.png`;
   link.href = dataUrl;
