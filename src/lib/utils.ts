@@ -1,18 +1,10 @@
-import domtoimage from 'dom-to-image-more';
+import html2canvas from 'html2canvas';
 import { UserData } from '../types';
 import { getFiveElements, getSajuValue, pick, OHF, OHK, BYEONGMAT_COMMENTS } from '../constants';
 
 export const captureScreen = async (elementId: string, fileName: string) => {
   const el = document.getElementById(elementId);
   if (!el) return;
-
-  // 버튼 완전히 숨기기 (레이아웃에서 제거)
-  const btns = el.querySelectorAll<HTMLElement>('button');
-  btns.forEach(b => { b.style.display = 'none'; });
-
-  // noise.png 대신 직접 배경색 지정
-  const origBg = el.style.background;
-  el.style.background = '#FAF3DC';
 
   // 스크롤 영역 전체 높이로 펼치기
   const scrollEls = el.querySelectorAll<HTMLElement>('.overflow-y-auto');
@@ -24,19 +16,27 @@ export const captureScreen = async (elementId: string, fileName: string) => {
     s.style.maxHeight = 'none';
   });
 
-  // DOM 반영 대기
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  const dataUrl = await domtoimage.toPng(el, {
+  const canvas = await html2canvas(el, {
     scale: 2,
-    bgcolor: '#FAF3DC',
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#FAF3DC',
+    logging: false,
     width: el.offsetWidth,
     height: el.scrollHeight,
+    windowWidth: el.offsetWidth,
+    windowHeight: el.scrollHeight,
+    onclone: (_doc, clone) => {
+      // 클론에서 저장 버튼 완전 제거
+      clone.querySelectorAll<HTMLElement>('button').forEach(b => { b.style.display = 'none'; });
+      // noise.png 대신 배경색 고정
+      clone.style.background = '#FAF3DC';
+    },
   });
 
-  // 복원
-  btns.forEach(b => { b.style.display = ''; });
-  el.style.background = origBg;
+  // 스크롤 영역 복원
   saved.forEach(({ el: s, ov, h, mh }) => {
     s.style.overflow = ov;
     s.style.height = h;
@@ -45,7 +45,7 @@ export const captureScreen = async (elementId: string, fileName: string) => {
 
   const link = document.createElement('a');
   link.download = `${fileName}.png`;
-  link.href = dataUrl;
+  link.href = canvas.toDataURL('image/png');
   link.click();
 };
 
