@@ -42,7 +42,6 @@ export const captureScreen = async (elementId: string, fileName: string) => {
     const canvas = await html2canvas(clone, {
       scale: 2,
       useCORS: true,
-      allowTaint: true,
       backgroundColor: '#FAF3DC',
       logging: false,
       width: w,
