@@ -191,7 +191,7 @@ export const MyResult1 = ({ myData, aiFortune, loadingAi, onSave }: any) => {
             <span className="text-base">✦</span> 하늘이 내린 전언
           </div>
           <div className="text-[12px] text-[#3D1F0A] leading-relaxed font-medium"
-            style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all', minHeight: 56 }}>
+            style={{ whiteSpace: 'pre-wrap', wordBreak: 'keep-all' }}>
             {loadingAi ? (
               <div className="flex items-center gap-2">
                 <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
