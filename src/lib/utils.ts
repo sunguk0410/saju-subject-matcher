@@ -6,22 +6,37 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const el = document.getElementById(elementId);
   if (!el) return;
 
-  // fixed 컨테이너 밖으로 클론해서 캡처 (html2canvas의 fixed 부모 버그 우회)
+  const w = el.offsetWidth;
+
+  // body 직접 하위에 클론 추가 (fixed 부모 우회)
   const clone = el.cloneNode(true) as HTMLElement;
-  clone.style.cssText = `position: fixed; left: -9999px; top: 0; width: ${el.offsetWidth}px; background: #FAF3DC; overflow: visible; z-index: -1;`;
+  clone.style.position = 'absolute';
+  clone.style.top = '-99999px';
+  clone.style.left = '0';
+  clone.style.width = w + 'px';
+  clone.style.background = '#FAF3DC';
+  clone.style.overflow = 'visible';
+  clone.style.zIndex = '-1';
 
-  // 클론에서 버튼 제거
-  clone.querySelectorAll<HTMLElement>('button').forEach(b => { b.style.display = 'none'; });
+  // 버튼 완전 제거
+  clone.querySelectorAll<HTMLElement>('button').forEach(b => b.remove());
 
-  // 클론에서 스크롤 영역 전체 펼치기
+  // 스크롤 영역 전체 펼치기
   clone.querySelectorAll<HTMLElement>('.overflow-y-auto').forEach(s => {
     s.style.overflow = 'visible';
     s.style.height = 'auto';
     s.style.maxHeight = 'none';
+    s.style.flexShrink = '0';
+  });
+  // flex 컨테이너 높이 제한 해제
+  clone.querySelectorAll<HTMLElement>('.flex-1').forEach(s => {
+    s.style.flex = 'none';
   });
 
   document.body.appendChild(clone);
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  const h = clone.scrollHeight;
 
   try {
     const canvas = await html2canvas(clone, {
@@ -30,20 +45,27 @@ export const captureScreen = async (elementId: string, fileName: string) => {
       allowTaint: true,
       backgroundColor: '#FAF3DC',
       logging: false,
+      width: w,
+      height: h,
+      windowWidth: w,
+      windowHeight: h,
+      x: 0,
+      y: 0,
       scrollX: 0,
-      scrollY: -window.scrollY,
+      scrollY: 0,
     });
 
-    const link = document.createElement('a');
-    link.download = `${fileName}.png`;
-    link.href = canvas.toDataURL('image/png');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `${fileName}.png`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => a.remove(), 200);
   } catch (e) {
-    console.error('captureScreen 오류:', e);
+    console.error('captureScreen error:', e);
   } finally {
-    document.body.removeChild(clone);
+    clone.remove();
   }
 };
 
