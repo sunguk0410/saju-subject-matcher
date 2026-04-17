@@ -34,7 +34,7 @@ export const SharePage = ({ myData }: any) => {
 
         <div className="bg-[#C8A14B]/10 border border-[#C8A14B]/20 rounded-xl p-3.5 mb-3 shadow-md">
           <div className="text-[12px] text-[#8B6914] font-bold mb-2">
-            ✦ 시험 기간 딴 짓 전략 (雜念戰略)
+            ✦ 시험 기간 딴짓 전략 (雜念戰略)
           </div>
           <p className="text-[12px] text-[#3D1F0A] leading-relaxed font-medium">
             {tactic}
