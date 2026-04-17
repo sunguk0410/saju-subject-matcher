@@ -6,6 +6,10 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const el = document.getElementById(elementId);
   if (!el) return;
 
+  // 저장 버튼 숨기기 (원본에서)
+  const btns = el.querySelectorAll<HTMLElement>('button');
+  btns.forEach(b => { b.style.visibility = 'hidden'; });
+
   // 스크롤 영역 전체 높이로 펼치기
   const scrollEls = el.querySelectorAll<HTMLElement>('.overflow-y-auto');
   const saved: { el: HTMLElement; ov: string; h: string; mh: string }[] = [];
@@ -16,37 +20,42 @@ export const captureScreen = async (elementId: string, fileName: string) => {
     s.style.maxHeight = 'none';
   });
 
+  // 배경 고정
+  const origBg = el.style.background;
+  el.style.background = '#FAF3DC';
+
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  const canvas = await html2canvas(el, {
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#FAF3DC',
-    logging: false,
-    width: el.offsetWidth,
-    height: el.scrollHeight,
-    windowWidth: el.offsetWidth,
-    windowHeight: el.scrollHeight,
-    onclone: (_doc, clone) => {
-      // 클론에서 저장 버튼 완전 제거
-      clone.querySelectorAll<HTMLElement>('button').forEach(b => { b.style.display = 'none'; });
-      // noise.png 대신 배경색 고정
-      clone.style.background = '#FAF3DC';
-    },
-  });
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#FAF3DC',
+      logging: false,
+      scrollX: 0,
+      scrollY: 0,
+    });
 
-  // 스크롤 영역 복원
-  saved.forEach(({ el: s, ov, h, mh }) => {
-    s.style.overflow = ov;
-    s.style.height = h;
-    s.style.maxHeight = mh;
-  });
-
-  const link = document.createElement('a');
-  link.download = `${fileName}.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+    const link = document.createElement('a');
+    link.download = `${fileName}.png`;
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
+    console.error('captureScreen 오류:', e);
+    alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
+  } finally {
+    // 원상복구
+    btns.forEach(b => { b.style.visibility = ''; });
+    el.style.background = origBg;
+    saved.forEach(({ el: s, ov, h, mh }) => {
+      s.style.overflow = ov;
+      s.style.height = h;
+      s.style.maxHeight = mh;
+    });
+  }
 };
 
 export const fetchAiFortune = async (userData: UserData): Promise<string> => {
