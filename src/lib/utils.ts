@@ -113,12 +113,14 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   // 9:16 프레임: 컨텐츠보다 짧으면 아래를 noise.png로 채움
   const frameH = Math.max(h, Math.round(w * 16 / 9));
   const frame = document.createElement('div');
+
   frame.style.cssText = `width:${w}px;height:${frameH}px;position:relative;overflow:hidden;`;
   if (noiseB64) {
     frame.style.backgroundImage = `url('${noiseB64}')`;
     frame.style.backgroundRepeat = 'repeat';
   }
   clone.style.backgroundColor = 'transparent';
+
   clone.style.backgroundImage = ''; // 배경은 frame이 담당
   frame.appendChild(clone);         // clone을 frame으로 이동 (DOM 자동 reparent)
   wrapper.appendChild(frame);
@@ -137,6 +139,7 @@ export const captureScreen = async (elementId: string, fileName: string) => {
       pixelRatio: 2,
       width: w,
       height: frameH,
+      backgroundColor: '#FAF3DC',
       cacheBust: false,
       skipFonts: true,
     });
