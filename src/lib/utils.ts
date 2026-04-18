@@ -43,10 +43,9 @@ const buildNotoCSS = async (pageText: string): Promise<string> => {
   if (notoCSSCache.has(chars)) return notoCSSCache.get(chars)!;
   try {
     let css = await fetch(
-      `https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&text=${encodeURIComponent(chars)}`,
-      { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36' } }
+      `https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&text=${encodeURIComponent(chars)}`
     ).then(r => r.text());
-    const urls = [...new Set([...css.matchAll(/url\(['"]?([^'")\s]+\.woff2[^'")\s]*)['"]?\)/g)].map(m => m[1]))];
+    const urls = [...new Set([...css.matchAll(/url\(['"]?([^'")\s]+\.woff2?[^'")\s]*)['"]?\)/g)].map(m => m[1]))];
     await Promise.all(urls.map(async url => { const b64 = await fetchBase64(url); if (b64) css = css.replaceAll(url, b64); }));
     notoCSSCache.set(chars, css);
     return css;
