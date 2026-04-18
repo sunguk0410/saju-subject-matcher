@@ -130,19 +130,25 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   frame.appendChild(clone);         // clone을 frame으로 이동 (DOM 자동 reparent)
   wrapper.appendChild(frame);
 
-  // 폰트를 clone 내부가 아닌 document.head에 주입 → Mac Safari/Chrome의 SVG foreignObject 내
-  // @font-face 미인식 문제 우회. document.fonts.ready로 실제 로드 완료까지 대기.
-  const [pretendardCSS, notoCSS] = await Promise.all([pretendardCSSPromise, notoCSSPromise]);
-  const fontCSS = [pretendardCSS, notoCSS].filter(Boolean).join('\n');
-  const headStyle = document.createElement('style');
+  // Pretendard(pre-fetched) + Noto(text= subset) 조합 → <style>로 주입
+  // Mac: SVG foreignObject에서 base64 폰트 embed가 불안정하므로 내장 명조체(Apple Myungjo)로 대체
+  const isMac = /Mac OS X/.test(navigator.userAgent);
+  const [pretendardCSS, notoCSS] = await Promise.all([
+    pretendardCSSPromise,
+    isMac ? Promise.resolve('') : notoCSSPromise,
+  ]);
+  const macSerifCSS = isMac ? [400, 700, 900].map(w =>
+    `@font-face{font-family:"Noto Serif KR";font-weight:${w};src:local("Apple Myungjo"),local("AppleMyungjo"),local("Nanum Myeongjo");}`
+  ).join('\n') : '';
+  const fontCSS = [pretendardCSS, isMac ? macSerifCSS : notoCSS].filter(Boolean).join('\n');
   if (fontCSS) {
-    headStyle.textContent = fontCSS;
-    document.head.appendChild(headStyle);
-    await document.fonts.ready;
+    const style = document.createElement('style');
+    style.textContent = fontCSS;
+    clone.prepend(style);
   }
 
   try {
-    const opts = { pixelRatio: 2, width: w, height: frameH, backgroundColor: '#FAF3DC', cacheBust: false, skipFonts: false };
+    const opts = { pixelRatio: 2, width: w, height: frameH, backgroundColor: '#FAF3DC', cacheBust: false, skipFonts: true };
     // 첫 번째 호출로 리소스를 브라우저 캐시에 올린 뒤 두 번째에서 정확히 렌더링 (모바일 shadow/font 누락 방지)
     await toPng(frame, opts);
     const dataUrl = await toPng(frame, opts);
@@ -156,7 +162,6 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   } catch (e) {
     console.error('captureScreen error:', e);
   } finally {
-    headStyle.remove();
     wrapper.remove();
   }
 };
