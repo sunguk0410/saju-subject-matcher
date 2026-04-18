@@ -139,7 +139,7 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   ]);
   const macSerifCSS = isMac ? [400, 700, 900].map(w =>
     `@font-face{font-family:"Noto Serif KR";font-weight:${w};src:local("Apple Myungjo"),local("AppleMyungjo"),local("Nanum Myeongjo");}`
-  ).join('\n') : '';
+  ).join('\n') + '\n*{font-synthesis:weight style;}' : '';
   const fontCSS = [pretendardCSS, isMac ? macSerifCSS : notoCSS].filter(Boolean).join('\n');
   if (fontCSS) {
     const style = document.createElement('style');
