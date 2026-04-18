@@ -110,8 +110,11 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, onNext }: any) 
         <div>
           <div className="flex justify-between items-center mb-1">
             <label className={labelCls}>시험 과목 (科目)</label>
-            <button onClick={() => update('subjects', [...subjects, ''])}
-              className="text-[10px] text-[#8B1A1A] font-bold hover:underline">+ 추가</button>
+            {subjects.length < 6
+              ? <button onClick={() => update('subjects', [...subjects, ''])}
+                  className="text-[10px] text-[#8B1A1A] font-bold hover:underline">+ 추가</button>
+              : <span className="text-[10px] text-[#8B1A1A] font-bold opacity-40 cursor-not-allowed">+ 추가</span>
+            }
           </div>
           <div className="space-y-1.5">
             {subjects.map((s: string, i: number) => (
@@ -126,6 +129,11 @@ export const MyForm = ({ draftMyData, setDraftMyData, setMyData, onNext }: any) 
               </div>
             ))}
           </div>
+          {subjects.length >= 6 && (
+            <p className="mt-1.5 text-[10px] text-[#8B1A1A] font-medium italic">
+              ✦ 여섯 과목이 차면 팔자도 막히는 법 — 이미 하늘이 허락한 최대 수에 이르렀도다.
+            </p>
+          )}
         </div>
 
         <button
