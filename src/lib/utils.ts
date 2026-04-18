@@ -130,17 +130,19 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   frame.appendChild(clone);         // clone을 frame으로 이동 (DOM 자동 reparent)
   wrapper.appendChild(frame);
 
-  // Pretendard(pre-fetched) + Noto(text= subset) 조합 → <style>로 주입
+  // 폰트를 clone 내부가 아닌 document.head에 주입 → Mac Safari/Chrome의 SVG foreignObject 내
+  // @font-face 미인식 문제 우회. document.fonts.ready로 실제 로드 완료까지 대기.
   const [pretendardCSS, notoCSS] = await Promise.all([pretendardCSSPromise, notoCSSPromise]);
   const fontCSS = [pretendardCSS, notoCSS].filter(Boolean).join('\n');
+  const headStyle = document.createElement('style');
   if (fontCSS) {
-    const style = document.createElement('style');
-    style.textContent = fontCSS;
-    clone.prepend(style);
+    headStyle.textContent = fontCSS;
+    document.head.appendChild(headStyle);
+    await document.fonts.ready;
   }
 
   try {
-    const opts = { pixelRatio: 2, width: w, height: frameH, backgroundColor: '#FAF3DC', cacheBust: false, skipFonts: true };
+    const opts = { pixelRatio: 2, width: w, height: frameH, backgroundColor: '#FAF3DC', cacheBust: false, skipFonts: false };
     // 첫 번째 호출로 리소스를 브라우저 캐시에 올린 뒤 두 번째에서 정확히 렌더링 (모바일 shadow/font 누락 방지)
     await toPng(frame, opts);
     const dataUrl = await toPng(frame, opts);
@@ -154,6 +156,7 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   } catch (e) {
     console.error('captureScreen error:', e);
   } finally {
+    headStyle.remove();
     wrapper.remove();
   }
 };
