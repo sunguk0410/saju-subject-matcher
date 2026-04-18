@@ -335,7 +335,7 @@ export const SubjCompatPage = ({ myData }: any) => {
                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${OHC[oh]}`}>{OHK[oh]}</span>
                     <span className="text-[13px] font-bold text-[#3D1F0A]">{subj}</span>
                   </div>
-                  <span className="text-[16px] font-serif font-bold" style={{ color: elementColor }}>{score}점</span>
+                  <span className="text-[16px] font-serif font-bold" style={{ color: elementColor, whiteSpace: 'nowrap' }}>{score}점</span>
                 </div>
                 <div className="h-1 bg-[#C8A14B]/10 rounded-full overflow-hidden mb-1.5">
                   <div className="h-full rounded-full transition-all duration-1000"

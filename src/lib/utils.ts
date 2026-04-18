@@ -79,6 +79,14 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const clone = el.cloneNode(true) as HTMLElement;
   clone.style.cssText = `position:relative;top:0;left:0;width:${w}px;overflow:visible;`;
 
+  // .page-bg CSS의 url('/noise.png') 상대경로는 html-to-image SVG 내에서 해석 불가 → base64로 직접 교체
+  const applyNoiseBg = (node: HTMLElement) => {
+    node.style.backgroundImage = `url('${noiseDataUrl}')`;
+    node.style.backgroundRepeat = 'repeat';
+  };
+  if (clone.classList.contains('page-bg')) applyNoiseBg(clone);
+  clone.querySelectorAll<HTMLElement>('.page-bg').forEach(applyNoiseBg);
+
   clone.querySelectorAll<HTMLElement>('button').forEach(b => b.remove());
   clone.querySelectorAll<HTMLElement>('.overflow-y-auto').forEach(s => {
     s.style.overflow = 'visible';
@@ -114,8 +122,6 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   frame.style.backgroundImage = `url('${noiseDataUrl}')`;
   frame.style.backgroundRepeat = 'repeat';
   clone.style.backgroundColor = 'transparent';
-
-  clone.style.backgroundImage = ''; // 배경은 frame이 담당
   frame.appendChild(clone);         // clone을 frame으로 이동 (DOM 자동 reparent)
   wrapper.appendChild(frame);
 
@@ -129,14 +135,10 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   }
 
   try {
-    const dataUrl = await toPng(frame, {
-      pixelRatio: 2,
-      width: w,
-      height: frameH,
-      backgroundColor: '#FAF3DC',
-      cacheBust: false,
-      skipFonts: true,
-    });
+    const opts = { pixelRatio: 2, width: w, height: frameH, backgroundColor: '#FAF3DC', cacheBust: false, skipFonts: true };
+    // 첫 번째 호출로 리소스를 브라우저 캐시에 올린 뒤 두 번째에서 정확히 렌더링 (모바일 shadow/font 누락 방지)
+    await toPng(frame, opts);
+    const dataUrl = await toPng(frame, opts);
 
     const a = document.createElement('a');
     a.href = dataUrl;
