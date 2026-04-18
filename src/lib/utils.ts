@@ -1,6 +1,7 @@
 import { toPng } from 'html-to-image';
 import { UserData } from '../types';
 import { getFiveElements, getSajuValue, pick, OHF, OHK, BYEONGMAT_COMMENTS } from '../constants';
+import noiseDataUrl from '../assets/noise.png?inline';
 
 // ── 에셋 사전 로딩 ──────────────────────────────────────────────
 const b64Cache = new Map<string, string>();
@@ -54,7 +55,6 @@ const buildNotoCSS = async (pageText: string): Promise<string> => {
 
 // 모듈 import 시 즉시 Pretendard pre-fetch 시작
 const pretendardCSSPromise = buildPretendardCSS();
-const noisePngPromise = fetchBase64(`${window.location.origin}/noise.png`);
 
 // ── captureScreen ────────────────────────────────────────────────
 export const captureScreen = async (elementId: string, fileName: string) => {
@@ -73,15 +73,11 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   zoomedAncestors.forEach(({ node, was }) => { node.style.zoom = was; });
   if (!w) return;
 
-  const noiseB64 = await noisePngPromise || await fetchBase64(`${window.location.origin}/noise.png`);
-
   const wrapper = document.createElement('div');
   wrapper.style.cssText = 'position:fixed;top:-99999px;left:-99999px;overflow:visible;pointer-events:none;';
 
   const clone = el.cloneNode(true) as HTMLElement;
   clone.style.cssText = `position:relative;top:0;left:0;width:${w}px;overflow:visible;`;
-  clone.style.backgroundImage = noiseB64 ? `url('${noiseB64}')` : 'url(/noise.png)';
-  clone.style.backgroundRepeat = 'repeat';
 
   clone.querySelectorAll<HTMLElement>('button').forEach(b => b.remove());
   clone.querySelectorAll<HTMLElement>('.overflow-y-auto').forEach(s => {
@@ -115,10 +111,8 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const frame = document.createElement('div');
 
   frame.style.cssText = `width:${w}px;height:${frameH}px;position:relative;overflow:hidden;`;
-  if (noiseB64) {
-    frame.style.backgroundImage = `url('${noiseB64}')`;
-    frame.style.backgroundRepeat = 'repeat';
-  }
+  frame.style.backgroundImage = `url('${noiseDataUrl}')`;
+  frame.style.backgroundRepeat = 'repeat';
   clone.style.backgroundColor = 'transparent';
 
   clone.style.backgroundImage = ''; // 배경은 frame이 담당
