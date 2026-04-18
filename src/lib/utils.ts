@@ -106,9 +106,15 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
   // overflow:hidden 요소가 있으면 html-to-image 내부 인라인화 시 잘림 → 전부 visible로
+  // 동시에 box-shadow + border-radius 조합은 모바일에서 직사각형 그림자로 렌더링되는 버그가 있으므로
+  // filter: drop-shadow()로 교체 (border-radius를 따라 정확히 렌더링됨)
   clone.querySelectorAll<HTMLElement>('*').forEach(child => {
     const cs = window.getComputedStyle(child);
     if (cs.overflow === 'hidden' || cs.overflowX === 'hidden') child.style.overflow = 'visible';
+    if (cs.boxShadow !== 'none' && cs.borderRadius !== '0px') {
+      child.style.boxShadow = 'none';
+      child.style.filter = [child.style.filter, 'drop-shadow(0 2px 6px rgba(0,0,0,0.10))'].filter(Boolean).join(' ');
+    }
   });
 
   const h = clone.scrollHeight;
