@@ -54,7 +54,7 @@ const buildNotoCSS = async (pageText: string): Promise<string> => {
 
 // 모듈 import 시 즉시 Pretendard pre-fetch 시작
 const pretendardCSSPromise = buildPretendardCSS();
-const noisePngPromise = fetchBase64('/noise.png');
+const noisePngPromise = fetchBase64(`${window.location.origin}/noise.png`);
 
 // ── captureScreen ────────────────────────────────────────────────
 export const captureScreen = async (elementId: string, fileName: string) => {
@@ -73,7 +73,7 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   zoomedAncestors.forEach(({ node, was }) => { node.style.zoom = was; });
   if (!w) return;
 
-  const noiseB64 = await noisePngPromise;
+  const noiseB64 = await noisePngPromise || await fetchBase64(`${window.location.origin}/noise.png`);
 
   const wrapper = document.createElement('div');
   wrapper.style.cssText = 'position:fixed;top:-99999px;left:-99999px;overflow:visible;pointer-events:none;';
@@ -114,8 +114,10 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const frameH = Math.max(h, Math.round(w * 16 / 9));
   const frame = document.createElement('div');
   frame.style.cssText = `width:${w}px;height:${frameH}px;position:relative;overflow:hidden;`;
-  frame.style.backgroundImage = noiseB64 ? `url('${noiseB64}')` : 'url(/noise.png)';
-  frame.style.backgroundRepeat = 'repeat';
+  if (noiseB64) {
+    frame.style.backgroundImage = `url('${noiseB64}')`;
+    frame.style.backgroundRepeat = 'repeat';
+  }
   clone.style.backgroundColor = 'transparent';
   clone.style.backgroundImage = ''; // 배경은 frame이 담당
   frame.appendChild(clone);         // clone을 frame으로 이동 (DOM 자동 reparent)
