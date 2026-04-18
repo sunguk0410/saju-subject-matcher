@@ -110,6 +110,16 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   const h = clone.scrollHeight;
   if (!h) { wrapper.remove(); return; }
 
+  // 9:16 프레임: 컨텐츠보다 짧으면 아래를 noise.png로 채움
+  const frameH = Math.max(h, Math.round(w * 16 / 9));
+  const frame = document.createElement('div');
+  frame.style.cssText = `width:${w}px;height:${frameH}px;position:relative;overflow:hidden;`;
+  frame.style.backgroundImage = noiseB64 ? `url('${noiseB64}')` : 'url(/noise.png)';
+  frame.style.backgroundRepeat = 'repeat';
+  clone.style.backgroundImage = ''; // 배경은 frame이 담당
+  frame.appendChild(clone);         // clone을 frame으로 이동 (DOM 자동 reparent)
+  wrapper.appendChild(frame);
+
   // Pretendard(pre-fetched) + Noto(text= subset) 조합 → <style>로 주입
   const [pretendardCSS, notoCSS] = await Promise.all([pretendardCSSPromise, notoCSSPromise]);
   const fontCSS = [pretendardCSS, notoCSS].filter(Boolean).join('\n');
@@ -120,10 +130,10 @@ export const captureScreen = async (elementId: string, fileName: string) => {
   }
 
   try {
-    const dataUrl = await toPng(clone, {
+    const dataUrl = await toPng(frame, {
       pixelRatio: 2,
       width: w,
-      height: h,
+      height: frameH,
       cacheBust: false,
       skipFonts: true,
     });
